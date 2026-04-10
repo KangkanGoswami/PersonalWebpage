@@ -1,208 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Talks & Presentations - Kangkan Goswami</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talks - Kangkan Goswami</title>
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { font-family: 'Roboto', sans-serif; background: #f8f8f8; color: #333; }
-    body { line-height: 1.8; overflow-x: hidden; }
-
-    nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: rgba(0, 31, 63, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 20px;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideInNav 1s ease-out;
-  transition: top 0.4s ease;
-}
-
-nav.hidden {
-  top: -100px; /* Hide nav outside viewport */
-}
-
-nav a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  margin: 0 20px;
-  font-size: 18px;
-  transition: all 0.3s ease-in-out;
-}
-
-nav a:hover {
-  color: #c0deb4;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  color: #70c1b3;
-  border-bottom: 2px solid #70c1b3;
-}
-
-    .talks-header {
-      background: #003366; color: #fff; padding: 80px 20px; text-align: center;
-    }
-    .talks-header h1 {
-      font-family: 'Playfair Display', serif; font-size: 42px; margin-bottom: 15px;
-    }
-    .talks-header p { font-size: 20px; color: #ddd; }
-
-    section { padding: 100px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-
-    .subheader {
-      background-color: #336699; color: #ffffff; font-size: 35px; font-weight: 600;
-      margin-bottom: 30px; padding: 15px 30px; border-radius: 8px;
-    }
-
-.publication-year {
-    display: inline-block;
-    background-color: #8ebae7; /* Your accent color */
-    color: #2A2A2A;
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-}
-
-    .talk-item {
-      background: #f4f6f7; padding: 20px; margin: 20px 0; border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 1000px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .talk-item:hover { transform: translateX(10px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-
-    .talk-title { font-size: 24px; color: #2e4053; margin-bottom: 10px; }
-    .talk-conference { font-size: 18px; color: #555; margin-bottom: 15px; }
-
-    .pdf-button {
-      display: inline-block; background-color: #2A2A2A; color: white; padding: 10px 30px;
-      border-radius: 6px; text-decoration: none; font-weight: 600; transition: background-color 0.3s;
-    }
-    .pdf-button:hover { background-color: #8ebae7; color: #2A2A2A; }
-    .back-button {
-      display: inline-block;
-      background-color: #2A2A2A;
-      color: white;
-      padding: 10px 30px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      margin-top: 40px;
-    }
-    .back-button:hover {
-      background-color: #8ebae7;
-      color: #2A2A2A;
-      transform: translateY(-3px);
-    }
-    footer {
-      background: #2a2a2a; color: #fff; padding: 40px 20px; text-align: center;
-    }
-    a.footer-link { color: #70c1b3; text-decoration: none; }
-    a.footer-link:hover { text-decoration: underline; }
-
-    @keyframes slideInNav {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(0); }
-    }
-
-  </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
-<nav>
-    <a href="index.html#about">About</a>
-    <a href="index.html#research">Research</a>
-    <a href="talks.html">Talks</a>
-    <a href="teaching.html">Teaching</a>
-    <a href="index.html#contact">Contact</a>
+<nav class="top-nav">
+  <div class="nav-container">
+
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="talks.html" class="active">Talks</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="cv.html">CV</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="theme-toggle-wrapper">
+        <i class="fas fa-moon toggle-icon moon"></i>
+
+        <label class="theme-switch">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+
+        <i class="fas fa-sun toggle-icon sun"></i>
+      </div>
+    </div>
+
+  </div>
 </nav>
 
-<header>
-  <div class="talks-header">
-    <h1>Talks & Presentations</h1>
-    <p>Conference Talks and Presentation Files</p>
-  </div>
-</header>
+<div class="talks-container">
 
-<section>
-  <div class="subheader">Conference Talks</div>
+<h1>Talks & Presentations</h1>
 
-  <!-- Example Talk 1 -->
-  <div class="talk-item">
-    <h3 class="talk-title">Charm diffusion in an interacting hadronic matter and a possible new probe for QCD critical point</h3>
-    <p class="publication-year">IISER Berhampur, January 2025</p>
-    <p class="talk-conference">Presented at 10th Asian Triangle Heavy-Ion Conference</p>
-    <a href="Talks/MachineLearning_OpenCharm_QM2025.pdf" target="_blank" class="pdf-button">View Presentation</a>
-  </div>
+  <div class="timeline">
+  <div class="year-block">
+    <div class="year-header">
+      <div></div>
+      <div class="year-title">2025</div>
+    </div>
+    <div class="talk">
+      <div class="talk-title">A novel machine learning method to identify heavy-flavor decay leptons</div>
+      <div class="talk-meta">Poster · DAE-BRNS Symposium on Nuclear Physics</div>
+      <div class="talk-location">NIT Jalandhar, India · December 2025</div>
+    </div>
 
-  <!-- Example Talk 2 -->
-  <div class="talk-item">
-    <h3 class="talk-title">Diffusion matrix related to charmed state and a new probe for QCD critical point</h3>
-    <p class="publication-year">Banaras Hindu University, December 2024</p>
-    <p class="talk-conference">Presented at XXVI DAE-BRNS High Energy Physics Symposium</p>
-    <a href="talks/DAE_HEP_2024.pdf" target="_blank" class="pdf-button">View Presentation</a>
-  </div>
+    <div class="talk">
+      <div class="talk-title">Partial pressure of charmed hadrons in an interacting hadronic medium</div>
+      <div class="talk-meta">Poster · DAE-BRNS Symposium on Nuclear Physics</div>
+      <div class="talk-location">NIT Jalandhar, India · December 2025</div>
+    </div>
 
-  <div class="talk-item">
-    <h3 class="talk-title">A study of open-charmed hadrons in p-p collisions using machine learning methods</h3>
-    <p class="publication-year">IIT Roorkee, December 2024</p>
-    <p class="talk-conference">Presented at 68th DAE Symposium on Nuclear Physics</p>
-    <a href="talks/DAE_NP_2024.pdf" target="_blank" class="pdf-button">View Presentation</a>
-  </div>
+    <div class="talk">
+      <div class="talk-title">Diffusion of Charm Quarks and the Search of QCD Critical Point</div>
+      <div class="talk-meta">Poster · Initial Stages 2025</div>
+      <div class="talk-location">Taipei, Taiwan · September 2025</div>
+    </div>
 
-  <div class="talk-item">
-    <h3 class="talk-title">Exploring the melting of heavy-flavor hadrons and diffusion of charm quarks</h3>
-    <p class="publication-year">Universitat de Barcelona, July 2024</p>
-    <p class="talk-conference">Presented at 10th International Conference on Quarks and Nuclear Physics</p>
-    <a href="talks/QNP_2024.pdf" target="_blank" class="pdf-button">View Presentation</a>
-  </div>
+    <div class="talk">
+      <div class="talk-title">Diffusion coefficient matrix related to charm sector in an interacting hadronic medium</div>
+      <div class="talk-meta">Poster · Quark Matter 2025</div>
+      <div class="talk-location">Frankfurt, Germany · April 2025</div>
+    </div>
 
-  <!-- Example Talk 3 -->
-  <div class="talk-item">
-    <h3 class="talk-title">Dynamics of charmed hadrons in an interacting hadron gas</h3>
-    <p class="publication-year">IIT Indore, December 2023</p>
-    <p class="talk-conference">Presented at 67th DAE Symposium on Nuclear Physics</p>
-    <a href="talks/DAE_NP_2023.pdf" target="_blank" class="pdf-button">View Presentation</a>
+    <div class="talk">
+      <div class="talk-title">Possibility of charm diffusion in an interacting hadronic matter</div>
+      <div class="talk-meta">Talk · ATHIC 2025</div>
+      <div class="talk-location">IISER Berhampur, India · January 2025</div>
+      <a href="talks/ATHIC_2025.pdf" class="btn">Slides</a>
+    </div>
   </div>
 
-  <a href="index.html#teaching" class="back-button">&larr; Back to Home</a>
-</section>
+    <div class="year-block">
+    <div class="year-header">
+      <div></div>
+      <div class="year-title">2024</div>
+    </div>
+    <div class="talk">
+      <div class="talk-title">Diffusion matrix related to charmed state and a new probe for QCD critical point</div>
+      <div class="talk-meta">Talk · DAE-BRNS HEP Symposium</div>
+      <div class="talk-location">BHU, India · December 2024</div>
+      <a href="talks/DAE_HEP_2024.pdf" class="btn">Slides</a>
+    </div>
 
-<footer>
-    Last updated: May 2025. 
-</footer>
+    <div class="talk">
+      <div class="talk-title">A study of open-charmed hadrons in p-p collisions using machine learning methods</div>
+      <div class="talk-meta">Talk · DAE Symposium on Nuclear Physics</div>
+      <div class="talk-location">IIT Roorkee, India · December 2024</div>
+      <a href="talks/DAE_NP_2024.pdf" class="btn">Slides</a>
+    </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let lastScrollTop = 0;
-      const nav = document.querySelector("nav");
-    
-      window.addEventListener("scroll", function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-        if (scrollTop > lastScrollTop) {
-          // Scroll down
-          nav.classList.add("hidden");
-        } else {
-          // Scroll up
-          nav.classList.remove("hidden");
-        }
-        lastScrollTop = scrollTop;
-      });
-    });
-    </script>
+    <div class="talk">
+      <div class="talk-title">Exploring the melting of heavy-flavor hadrons and diffusion of charm quarks</div>
+      <div class="talk-meta">Talk · Quarks and Nuclear Physics</div>
+      <div class="talk-location">Barcelona, Spain · July 2024</div>
+      <a href="talks/QNP_2024.pdf" class="btn">Slides</a>
+    </div>
+
+    <div class="talk">
+      <div class="talk-title">Understanding the diffusion and melting of heavy flavor hadrons</div>
+      <div class="talk-meta">Poster · SQM Conference</div>
+      <div class="talk-location">Strasbourg, France · June 2024</div>
+    </div>
+  </div>
+
+    <div class="year-block">
+    <div class="year-header">
+      <div></div>
+      <div class="year-title">2023</div>
+    </div>
+    <div class="talk">
+      <div class="talk-title">Dynamics of charmed hadrons in an interacting hadron gas</div>
+      <div class="talk-meta">Talk · DAE Symposium on Nuclear Physics</div>
+      <div class="talk-location">IIT Indore, India · December 2023</div>
+      <a href="talks/DAE_NP_2023.pdf" class="btn">Slides</a>
+    </div>
+  </div>
+
+</div>
+
+</div>
+<script src="theme.js"></script>
 </body>
 </html>

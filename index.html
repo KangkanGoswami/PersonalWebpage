@@ -1,682 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kangkan Goswami</title>
-  <!-- Google Fonts for typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  
-<!---For LaTeX text---->
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
-    </script>
-    
-    <!-- MathJax Loading -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    
-    <style>
-    /* Reset and Basic Setup */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kangkan Goswami</title>
 
-    html, body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f8f8;
-      color: #333;
-      scroll-behavior: smooth;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    /* Global Styles */
-    body {
-      line-height: 1.8;
-      overflow-x: hidden;
-    }
-
-    header {
-  background: #2a2a2a;
-  background-image: url('bkg.jpg');
-  background-size: cover;
-  background-position: center;
-  color: #fff;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 0 20px;
-  position: relative;
-  overflow: hidden;
-  animation: slideInHeader 2s ease-out;
-}
-
-header::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1;
-}
-
-.header-content {
-  display: flex;
-  flex-direction: row;
-  gap: 60px;
-  align-items: center;
-  z-index: 2;
-}
-
-.text-content {
-  margin-right: 40px;
-}
-
-.text-content h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 80px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #ffffff;
-  opacity: 1;
-  
-}
-
-.text-content p {
-  font-size: 24px;
-  color: #ddd;
-  opacity: 0;
-  animation: fadeIn 1s forwards 2s;
-}
-
-.image-content img {
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 20px;
-  border: 5px solid #003366;
-}
-.article-content-wrapper {
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-  margin-top: 30px;
-  align-items: flex-start;
-}
-
-.article-plot-single {
-  flex: 0 0 40%; /* Don't grow, don't shrink, start at 50% width */
-  max-width: 400px; /* Maximum size */
-  min-width: 250px; /* Minimum size */
-}
-
-.article-plot-single img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.article-abstract {
-  flex: 1;
-  padding: 20px;
-  background-color: #f0f3f5;
-  border-radius: 8px;
-}
-
-.article-abstract h4 {
-  font-size: 20px;
-  color: #2e4053;
-  margin-bottom: 15px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #70c1b3;
-}
-
-@media (max-width: 768px) {
-  .article-content-wrapper {
-    flex-direction: column;
-  }
-  
-  .article-plot-single {
-    width: 100%;
-  }
-}
-
-    /* Navbar */
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: rgba(0, 31, 63, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 20px;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideInNav 1s ease-out;
-  transition: top 0.4s ease;
-}
-
-nav.hidden {
-  top: -100px; /* Hide nav outside viewport */
-}
-
-nav a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  margin: 0 20px;
-  font-size: 18px;
-  transition: all 0.3s ease-in-out;
-}
-
-nav a:hover {
-  color: #c0deb4;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  color: #70c1b3;
-  border-bottom: 2px solid #70c1b3;
-}
-    /* Section Styles */
-    section {
-      padding: 20px 20px;
-      min-height: 20vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #333;
-      animation: fadeIn 1.5s forwards;
-    }
-
-  .section-header {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  font-weight: bold;
-  margin-bottom: 40px;
-  color: #fafbfc;
-  opacity: 1;
-  background-color: #003366 ;
-  text-align: center;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  letter-spacing: 2px; /* NEW: subtle spacing */
-  border-radius: 8px; /* NEW: softer design */
-}
-.description {
-  max-width: 800px;
-  text-align: justify;
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 40px;
-}
-.about-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 40px;
-  width: 100%;
-  max-width: 1200px;
-}
-
-.about-column {
-  flex: 1 1 400px; /* grow, shrink, minimum width */
-  background-color: #f4f6f7;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.about-column .subheader {
-  background-color: #336699;
-  color: #ffffff;
-  font-size: 28px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.timeline {
-  list-style: none;
-  padding: 0;
-}
-
-.timeline li {
-  padding: 10px 0;
-  border-bottom: 1px solid #ccc;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-}
-
-.timeline li:last-child {
-  border-bottom: none;
-}
-
-.year {
-  font-weight: bold;
-  color: #336699;
-  margin-right: 15px;
-  min-width: 100px;
-  text-align: right;
-}
-.section-separator {
-  border: none;
-  height: 2px;
-  background: linear-gradient(to right, #70c1b3, #2a2a2a, #70c1b3);
-  margin: 60px 0;
-  width: 60%;
-  opacity: 0.7;
-  animation: fadeIn 1s forwards;
-}
-    .subheader {
-      background-color: #336699;
-      padding: 15px 30px;
-      border-radius: 8px;
-      font-size: 24px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-top: 40px;
-      margin-bottom: 30px;
-      opacity: 1;
-    }
-
-.research-article {
-  background-color: #f4f6f7;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  animation: fadeIn 1.5s forwards;
-}
-
-.article-info {
-  text-align: center;
-}
-
-.article-title {
-  font-size: 28px;
-  color: #2e4053;
-  margin-bottom: 5px;
-}
-
-.article-authors, .article-journal {
-  font-size: 18px;
-  color: #555;
-  margin: 5px 0;
-}
-
-.doi-button {
-  display: inline-block;
-  margin-top: 5px;
-  background-color: #2A2A2A;
-  color: white;
-  padding: 10px 40px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.doi-button:hover {
-  background-color: #8ebae7;
-  color: #2A2A2A;
-  transform: translateY(-1px);
-  
-}
-.contact-section {
-  padding: 20px 20px;
-  text-align: center;
-  background-color: #f4f6f7;
-  border-radius: 12px;
-  margin: 60px auto;
-  max-width: 1000px; /* <-- smaller width */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.contact-header {
-  font-family: 'Playfair Display', serif;
-  font-size: 32px; /* Slightly smaller header */
-  color: #003366;
-  margin-bottom: 20px;
-}
-
-.contact-description {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 25px;
-}
-
-.contact-email {
-  font-size: 20px;
-  color: #2e4053;
-}
-
-.contact-link {
-  color: #70c1b3;
-  font-weight: bold;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.contact-link:hover {
-  color: #003366;
-  text-decoration: underline;
-}
-.article-plots {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.article-plots img {
-  width: 45%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.article-abstract {
-  font-size: 18px;
-  color: #333;
-  text-align: justify;
-}
-.conference-proceeding {
-  background-color: #f4f6f7;
-  padding: 20px;
-  margin: 30px 0;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  text-align: center;
-  animation: fadeIn 1.5s forwards;
-}
-
-.proceeding-title {
-  font-size: 24px;
-  color: #2e4053;
-  margin-bottom: 10px;
-}
-
-.button-container {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.custom-button {
-  flex: 0 0 40%; /* ~40% width */
-  text-align: center;
-  padding: 20px 0;
-  background: #003366;
-  color: white;
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: 600;
-  border-radius: 12px;
-  transition: all 0.4s ease;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.custom-button:hover {
-  transform: translateY(-10px);
-  background: #ffffff;
-  color: #003366;
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
-}
-
-.proceeding-journal {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-mjx-container[jax="CHTML"] {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    footer {
-      background: #2a2a2a;
-      color: #fff;
-      padding: 40px 20px;
-      text-align: center;
-      animation: fadeIn 1s forwards 3s;
-    }
-
-    a.footer-link {
-      color: #70c1b3;
-      text-decoration: none;
-    }
-
-    a.footer-link:hover {
-      text-decoration: underline;
-    }
-
-    .highlight {
-      color: #70c1b3;
-    }
-
-
-    /* Keyframes */
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes slideInHeader {
-      0% { transform: translateY(-50px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes slideInNav {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(0); }
-    }
-  </style>
-  
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<nav>
-  <a href="index.html#about">About</a>
-  <a href="index.html#research">Research</a>
-  <a href="talks.html">Talks</a>
-  <a href="teaching.html">Teaching</a>
-  <a href="index.html#contact">Contact</a>
+<nav class="top-nav">
+  <div class="nav-container">
+    
+    <div class="nav-left">
+      <a href="index.html" class="active">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="talks.html">Talks</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="cv.html">CV</a>
+    </div>
+
+    <div class="nav-right">
+  <div class="theme-toggle-wrapper">
+    
+    <i class="fas fa-moon toggle-icon moon"></i>
+
+    <label class="theme-switch">
+      <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+      <span class="slider"></span>
+    </label>
+
+    <i class="fas fa-sun toggle-icon sun"></i>
+
+  </div>
+</div>
+
+  </div>
 </nav>
 
-<header>
-  <div class="header-content">
-    <div class="image-content">
-      <img src="kangkan.JPG" alt="Kangkan Goswami">
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="main">
+
+    <h1><span>Kangkan Goswami</span> </h1>
+    <div class="subtitle">
+      Prime Minister’s Research Fellow  <br> Experimental High-Energy Physics · ALICE Experiment, CERN
     </div>
-    <div class="text-content">
-      <h1>Kangkan Goswami</h1>
-      <p>Research Scholar</p>
-      <p>Experimental High-Energy Physics</p>
-      <p>ALICE Collaboration, CERN</p>
+
+    <div class="section">
+      <h2>About</h2>
+        <p>
+        I am a Ph.D. researcher at the Indian Institute of Technology Indore, working in experimental high-energy physics. My research focuses on the properties of strongly interacting matter produced in heavy-ion collisions, with emphasis on heavy-flavor probes and the transport dynamics of the quark–gluon plasma within the ALICE experiment at CERN.
+        </p>
     </div>
+<div class="section">
+  <h2>Research</h2>
+
+  <p>
+    My research focuses on the properties of QCD matter under extreme conditions, combining phenomenological modeling with data-driven approaches to study the underlying dynamics of strongly interacting systems.
+  </p>
+
+  <ul class="research-list">
+    <li>
+      <strong>Heavy-flavor probes</strong> — Transport and diffusion of charm quarks and open-charm hadrons, and fluctuations in the charmed sector as probes of the medium.
+    </li>
+
+    <li>
+      <strong>QCD thermodynamics</strong> — Thermodynamic and transport properties of strongly interacting matter, including the effects of magnetic fields and medium interactions.
+    </li>
+
+    <li>
+      <strong>Machine learning in HEP</strong> — Data-driven identification of heavy-flavor decay channels and separation of prompt and non-prompt components.
+    </li>
+  </ul>
+</div>
+
   </div>
-</header>
 
-<section id="about">
-    <div class="section-header">About</div>
-    <p class="description">I am currently pursuing a Doctor of Philosophy (Ph.D.) in the Department of Physics at the Indian Institute of Technology Indore. My research focuses on experimental high-energy physics, specifically in the study of Quark-Gluon Plasma and heavy-ion collisions.
-        Prior to my Ph.D., I completed my Master of Science (M.Sc.) in Physics from the Department of Physics, Indian Institute of Technology Indore. I also hold a Bachelor of Science (B.Sc.) degree from Keshav Mahavidyalaya, University of Delhi.</p>
-        
-        <hr class="section-separator">
+  <!-- RIGHT -->
+  <div class="sidebar">
 
+    <img src="kangkan.JPG" alt="Kangkan Goswami" class="profile-img">
 
-        <div class="about-content">
-          <div class="about-column">
-            <div class="subheader">Education</div>
-            <ul class="timeline">
-              <li><span class="year">2022–Present</span> Ph.D., IIT Indore</li>
-              <li><span class="year">2019–2021</span> M.Sc. Physics, IIT Indore</li>
-              <li><span class="year">2016–2019</span> B.Sc. Physics, Delhi University</li>
-            </ul>
-          </div>
-          
-          <div class="about-column">
-            <div class="subheader">Achievements</div>
-            <ul class="timeline">
-              <li><span class="year">2022–Present</span> Prime Minister's Research Fellowship</li>
-              <li><span class="year">2022</span> GATE - AIR 27</li>
-              <li><span class="year">2021</span> CSIR-NET - AIR 134</li>
-              <li><span class="year">2019 & 2021</span> JEST - AIR 296 & 249</li>
-              <li><span class="year">2019</span> JAM - AIR 304</li>
-            </ul>
-          </div>
-        </div>
-  </section>
+    <div class="contact-card">
 
-  <section id="research">
-    <div class="section-header">Research</div>
-    <div class="subheader">Selected Publications</div>
+      <div class="contact-title">Contact</div>
 
-    <div class="research-article">
-      <div class="article-info">
-        <h3 class="article-title">Machine learning-based study of open-charm hadrons in proton-proton collisions at the Large Hadron Collider</h3>
-        <p class="article-authors"><strong>Kangkan Goswami</strong>, Suraj Prasad, Neelkamal Mallick, Raghunath Sahoo, and Gagan B. Mohanty</p>
-        <p class="article-journal">Physical Review D <strong>110</strong>, 034017, (2024).</p>
-        <a href="https://doi.org/10.1103/PhysRevD.110.034017" target="_blank" class="doi-button">DOI</a>
+      <div class="address">
+        Department of Physics<br>
+        IIT Indore, Madhya Pradesh<br>
+        India
       </div>
-    
-      <div class="article-content-wrapper">
-        <div class="article-plot-single">
-          <img src="Paper3.png" alt="Main plot from the article">
-        </div>
-        <div class="article-abstract">
-          <h4>Abstract</h4>
-          <p>In proton-proton and heavy-ion collisions, the study of charm hadrons plays a pivotal role in understanding the QCD medium and provides an undisputed testing ground for the theory of strong interaction, as they are mostly produced in the early stages of collisions via hard partonic interactions. The lightest open-charm, $D^{0}$ meson, can originate from two separate sources. The prompt $D^{0}$ originates from either direct charm production or the decay of excited open charm states, while the nonprompt stems from the decay of beauty hadrons. In this paper, using different machine learning (ML) algorithms such as XGBoost, CatBoost, and Random Forest, an attempt has been made to segregate the prompt and nonprompt production modes of $D^{0}$ meson signal from its background. The ML models are trained using the invariant mass through its hadronic decay channel, i.e., $D^{0}\rightarrow\pi^{+} K^{-}$, pseudoproper time, pseudoproper decay length, and distance of closest approach of $D^{0}$ meson, using PYTHIA8 simulated $pp$ collisions at $\sqrt{s}=13~\rm{TeV}$. The ML models used in this analysis are found to retain the pseudorapidity, transverse momentum, and collision energy dependence. 
-          </p>
-        </div>
+
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <a href="mailto:kangkan.goswami@cern.ch">kangkan.goswami@cern.ch</a>
       </div>
+
+      <div class="contact-item">
+        <i class="fas fa-book"></i>
+        <a href="https://inspirehep.net/authors/2108812" target="_blank">INSPIRE-HEP</a>
+      </div>
+
+      <div class="contact-item">
+        <i class="fab fa-orcid"></i>
+        <a href="https://orcid.org/0000-0002-0476-1005" target="_blank">ORCID</a>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-linkedin"></i>
+        <a href="https://www.linkedin.com/in/kangkan-goswami-ab6349161/" 
+          target="_blank" 
+          rel="noopener noreferrer">
+          LinkedIn
+        </a>
+      </div>
+
     </div>
 
-
-    <div class="research-article">
-      <div class="article-info">
-        <h3 class="article-title">Diffusion and fluctuations of open charmed hadrons in an interacting hadronic medium</h3>
-        <p class="article-authors"><strong>Kangkan Goswami</strong>, Kshitish Kumar Pradhan, Dushmanta Sahu, and Raghunath Sahoo</p>
-        <p class="article-journal">Physical Review D <strong>108</strong>, 074011, (2023).</p>
-        <a href="https://doi.org/10.1103/PhysRevD.108.074011" target="_blank" class="doi-button">DOI</a>
-      </div>
-    
-      <div class="article-content-wrapper">
-        <div class="article-plot-single">
-          <img src="Paper2.png" alt="Main plot from the article">
-        </div>
-        <div class="article-abstract">
-          <h4>Abstract</h4>
-          <p>Heavy quarks are excellent probes to understand the hot and dense medium formed in ultra-relativistic collisions. In a hadronic medium, studying the transport properties, e.g. the drag ($\gamma$), momentum diffusion ($B_{0}$), and spatial diffusion ($D_{s}$) coefficients of open charmed hadrons can provide useful information about the medium. Moreover, the fluctuations of charmed hadrons can help us to locate the onset of their deconfinement. In this work, we incorporate attractive and repulsive interactions in the well-established van der Waals hadron resonance gas model (VDWHRG) and study the diffusion and fluctuations of charmed hadrons. This study helps us understand the importance of interactions in the system, which affect both the diffusion and fluctuations of charmed hadrons.
-
-          </p>
-        </div>
-      </div>
-    </div>
-
-    
-
-
-    <div class="research-article">
-      <div class="article-info">
-        <h3 class="article-title">Understanding the QCD medium by the diffusion of charm quarks using a color string percolation model</h3>
-        <p class="article-authors"><strong>Kangkan Goswami</strong>, Dushmanta Sahu, and Raghunath Sahoo</p>
-        <p class="article-journal">Physical Review D <strong>107</strong>, 014003, (2023).</p>
-        <a href="https://doi.org/10.1103/PhysRevD.107.014003" target="_blank" class="doi-button">DOI</a>
-      </div>
-    
-      <div class="article-content-wrapper">
-        <div class="article-plot-single">
-          <img src="Paper1.png" alt="Main plot from the article">
-        </div>
-        <div class="article-abstract">
-          <h4>Abstract</h4>
-          <p>We study the drag and diffusion coefficients of the charm quark in the deconfined matter produced in the ultra-relativistic collisions by taking the Color String Percolation Model (CSPM) approach. CSPM, being a QCD-inspired model, can give us essential information about the hot and dense system produced in ultra-relativistic collisions. With the information on initial percolation temperature and percolation density, we estimate the relaxation time ($\tau_{c}$), drag coefficient ($\gamma$), transverse momentum diffusion coefficient ($B_{0}$), and spatial diffusion coefficient ($D_{s}$) of charm quark inside a deconfined medium. Finally, we compare the obtained results with lattice QCD and with various other theoretical models. A good agreement can be observed between the results obtained from CSPM and lattice QCD.
-
-          </p>
-        </div>
-      </div>
-    </div>
-
-
-    <div style="text-align: center; margin-top: 40px;">
-      <a href="publications.html" class="doi-button" style="font-size: 24px;">View All Publications</a>
-    </div>
-</section>
-
-<section id="teaching">
-  <div class="button-container">
-    <a href="talks.html" class="custom-button talks">Talks & Presentations</a>
-    <a href="teaching.html" class="custom-button teaching">Teaching Experience</a>
   </div>
-  
-</section>
 
-<section id="contact" class="contact-section">
-  <h2 class="contact-header">Get in Touch</h2>
-  <p class="contact-description">Feel free to reach out for research discussions, collaborations, or any queries.</p>
-  <p class="contact-email">Email: <a class="contact-link" href="mailto:kangkan.goswami@cern.ch">kangkan.goswami@cern.ch</a></p>
-</section>
-
-<footer>
-  Last updated: May 2025. 
-</footer>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    let lastScrollTop = 0;
-    const nav = document.querySelector("nav");
-  
-    window.addEventListener("scroll", function() {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  
-      if (scrollTop > lastScrollTop) {
-        // Scroll down
-        nav.classList.add("hidden");
-      } else {
-        // Scroll up
-        nav.classList.remove("hidden");
-      }
-      lastScrollTop = scrollTop;
-    });
-  });
-  </script>
+</div>
+<script src="theme.js"></script>
 </body>
 </html>

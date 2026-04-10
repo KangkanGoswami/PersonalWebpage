@@ -1,181 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Teaching Experience - Kangkan Goswami</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teaching - Kangkan Goswami</title>
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { font-family: 'Roboto', sans-serif; background: #f8f8f8; color: #333; }
-    body { line-height: 1.8; overflow-x: hidden; }
-
-    nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: rgba(0, 31, 63, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 20px;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideInNav 1s ease-out;
-  transition: top 0.4s ease;
-}
-
-nav.hidden {
-  top: -100px; /* Hide nav outside viewport */
-}
-
-nav a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  margin: 0 20px;
-  font-size: 18px;
-  transition: all 0.3s ease-in-out;
-}
-
-nav a:hover {
-  color: #c0deb4;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  color: #70c1b3;
-  border-bottom: 2px solid #70c1b3;
-}
-    .teaching-header {
-      background: #003366; color: #fff; padding: 80px 20px; text-align: center;
-    }
-    .teaching-header h1 {
-      font-family: 'Playfair Display', serif; font-size: 42px; margin-bottom: 15px;
-    }
-    .teaching-header p { font-size: 20px; color: #ddd; }
-
-    section { padding: 100px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-
-    .subheader {
-      background-color: #336699; color: #ffffff; font-size: 35px; font-weight: 600;
-      margin-bottom: 30px; padding: 15px 30px; border-radius: 8px;
-    }
-
-    .teaching-item {
-      background: #f4f6f7; padding: 20px; margin: 20px 0; border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 1000px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .teaching-item:hover { transform: translateY(-5px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-
-    .institute-name { font-size: 24px; color: #2e4053; margin-bottom: 15px; font-weight: bold; text-align: center; }
-    .course-list { list-style: disc inside; padding-left: 20px; }
-    .course-list li { font-size: 18px; color: #555; margin-bottom: 10px; }
-
-    .back-button {
-      display: inline-block;
-      background-color: #2A2A2A;
-      color: white;
-      padding: 10px 30px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      margin-top: 40px;
-    }
-    .back-button:hover {
-      background-color: #8ebae7;
-      color: #2A2A2A;
-      transform: translateY(-3px);
-    }
-
-    footer {
-      background: #2a2a2a; color: #fff; padding: 40px 20px; text-align: center;
-    }
-    a.footer-link { color: #70c1b3; text-decoration: none; }
-    a.footer-link:hover { text-decoration: underline; }
-
-    @keyframes slideInNav {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(0); }
-    }
-  </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-<body>
+<body class="teaching-page">
 
-<nav>
-    <a href="index.html#about">About</a>
-    <a href="index.html#research">Research</a>
-    <a href="talks.html">Talks</a>
-    <a href="teaching.html">Teaching</a>
-    <a href="index.html#contact">Contact</a>
+<nav class="top-nav">
+  <div class="nav-container">
+
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="talks.html">Talks</a>
+      <a href="teaching.html" class="active">Teaching</a>
+      <a href="cv.html">CV</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="theme-toggle-wrapper">
+        <i class="fas fa-moon toggle-icon moon"></i>
+
+        <label class="theme-switch">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+
+        <i class="fas fa-sun toggle-icon sun"></i>
+      </div>
+    </div>
+
+  </div>
 </nav>
 
-<header>
-  <div class="teaching-header">
-    <h1>Teaching Experience</h1>
-    <p>Courses and Assistance Roles</p>
-  </div>
-</header>
+<div class="container">
 
-<section>
-  <div class="subheader">Teaching Experience as TA</div>
+  <h1>Teaching Experience</h1>
+  <div class="subtitle">Teaching assistantships and academic instruction</div>
 
-  <!-- IIT Indore -->
-  <div class="teaching-item">
-    <div class="institute-name">Indian Institute of Technology Indore</div>
-    <ul class="course-list">
-      <li>Teaching Assistant for the B.Tech. Lab (Physics) — Jan - May 2024</li>
-      <li>Teaching Assistant for the B.Tech. Lab (Physics) — Jul - Dec 2024</li>
-    </ul>
-  </div>
+  <div class="section">
 
-  <!-- Holkar College -->
-  <div class="teaching-item">
-    <div class="institute-name">Government Holkar Science College, Indore</div>
-    <ul class="course-list">
-      <li>Teaching Assistant for "Electronic Technology" — Jan - May 2023</li>
-      <li>Teaching Assistant for "Electronics Circuits" — Aug - Dec 2024</li>
-    </ul>
-  </div>
+    <div class="entry">
+      <div class="institution">Indian Institute of Technology Indore</div>
+      <div class="year">2024</div>
+      <div class="course">• B.Tech Physics Laboratory — Jan–May</div>
+      <div class="course">• B.Tech Physics Laboratory — Jul–Dec</div>
+    </div>
 
-  <!-- Devi Ahilya Vishwavidyalaya -->
-  <div class="teaching-item">
-    <div class="institute-name">Devi Ahilya Vishwavidyalaya, Indore</div>
-    <ul class="course-list">
-      <li>Teaching Assistant for "Nuclear and Particle Physics" — Aug - Dec 2023</li>
-      <li>Teaching Assistant for "Electricity and Magnetism" — Jan - May 2024</li>
-    </ul>
+    <div class="entry">
+      <div class="institution">Government Holkar Science College, Indore</div>
+      <div class="year">2023–2024</div>
+      <div class="course">• Electronic Technology — Jan–May 2023</div>
+      <div class="course">• Electronic Circuits — Aug–Dec 2024</div>
+    </div>
+
+    <div class="entry">
+      <div class="institution">Devi Ahilya Vishwavidyalaya, Indore</div>
+      <div class="year">2023–2024</div>
+      <div class="course">• Nuclear and Particle Physics — Aug–Dec 2023</div>
+      <div class="course">• Electricity and Magnetism — Jan–May 2024</div>
+    </div>
+
   </div>
 
-  <a href="index.html#teaching" class="back-button">&larr; Back to Home</a>
+</div>
 
-</section>
-
-<footer>
-    Last updated: May 2025. 
-</footer>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let lastScrollTop = 0;
-      const nav = document.querySelector("nav");
-    
-      window.addEventListener("scroll", function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-        if (scrollTop > lastScrollTop) {
-          // Scroll down
-          nav.classList.add("hidden");
-        } else {
-          // Scroll up
-          nav.classList.remove("hidden");
-        }
-        lastScrollTop = scrollTop;
-      });
-    });
-    </script>
+<script src="theme.js"></script>
 </body>
 </html>

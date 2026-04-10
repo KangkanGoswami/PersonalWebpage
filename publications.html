@@ -1,726 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Publications - Kangkan Goswami</title>
-  <!-- Google Fonts for typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publications - Kangkan Goswami</title>
 
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      svg: {`
-        fontCache: 'global'
-      }
-    };
-    </script>
-    
-    <!-- MathJax Loading -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    
-    <style>
-    /* Reset and Basic Setup */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f8f8;
-      color: #333;
-      scroll-behavior: smooth;
-    }
-
-    /* Global Styles */
-    body {
-      line-height: 1.8;
-      overflow-x: hidden;
-    }
-    .publications-header {
-  background: #003366; /* Solid dark background */
-  color: #fff;
-  padding: 80px 20px;
-  text-align: center;
-  position: relative;
-  animation: fadeIn 1s ease-out;
-}
-
-.publications-header .header-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.publications-header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 42px;
-  margin-bottom: 15px;
-  color: #ffffff;
-}
-
-.publications-header .subtitle {
-  font-size: 20px;
-  color: #ddd;
-  margin-bottom: 0;
-}
-
-.text-content {
-  margin-right: 40px;
-}
-
-.text-content h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 80px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #ffffff;
-  opacity: 0;
-  animation: fadeIn 1s forwards 1s;
-}
-
-.text-content p {
-  font-size: 24px;
-  color: #ddd;
-  opacity: 0;
-  animation: fadeIn 1s forwards 2s;
-}
-
-.image-content img {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 20px;
-  border: 5px solid #70c1b3;
-}
-.article-content-wrapper {
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-  margin-top: 30px;
-  align-items: flex-start;
-}
-
-.article-plot-single {
-  flex: 0 0 40%; /* Don't grow, don't shrink, start at 50% width */
-  max-width: 400px; /* Maximum size */
-  min-width: 250px; /* Minimum size */
-}
-
-.article-plot-single img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.article-abstract {
-  flex: 1;
-  padding: 20px;
-  background-color: #f0f3f5;
-  border-radius: 8px;
-}
-
-.article-abstract h4 {
-  font-size: 20px;
-  color: #2e4053;
-  margin-bottom: 15px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #70c1b3;
-}
-
-@media (max-width: 768px) {
-  .article-content-wrapper {
-    flex-direction: column;
-  }
-  
-  .article-plot-single {
-    width: 100%;
-  }
-}
-
-    /* Navbar */
-    nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: rgba(0, 31, 63, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 20px;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideInNav 1s ease-out;
-  transition: top 0.4s ease;
-}
-
-nav.hidden {
-  top: -100px; /* Hide nav outside viewport */
-}
-
-nav a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  margin: 0 20px;
-  font-size: 18px;
-  transition: all 0.3s ease-in-out;
-}
-
-nav a:hover {
-  color: #c0deb4;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  color: #70c1b3;
-  border-bottom: 2px solid #70c1b3;
-}
-    /* Section Styles */
-    section {
-      padding: 100px 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #333;
-      animation: fadeIn 1.5s forwards;
-    }
-
-  .section-header {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  font-weight: bold;
-  margin-bottom: 40px;
-  color: #fafbfc;
-  opacity: 0;
-  animation: fadeIn 1s forwards 0.5s;
-  background-color: #70c1b3;
-  text-align: center;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  letter-spacing: 2px; /* NEW: subtle spacing */
-  border-radius: 8px; /* NEW: softer design */
-}
-.description {
-  max-width: 800px;
-  text-align: justify;
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 40px;
-}
-.about-content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 40px;
-  width: 100%;
-  max-width: 1200px;
-}
-
-.about-column {
-  flex: 1 1 400px; /* grow, shrink, minimum width */
-  background-color: #f4f6f7;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.about-column .subheader {
-  background-color: transparent;
-  color: #2e4053;
-  font-size: 28px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.timeline {
-  list-style: none;
-  padding: 0;
-}
-
-.timeline li {
-  padding: 10px 0;
-  border-bottom: 1px solid #ccc;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-}
-
-.publication-year {
-  display: inline-block;
-  background-color: #8ebae7; /* Your accent color */
-  color: #2A2A2A;
-  padding: 3px 10px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  letter-spacing: 0.5px;
-}
-.timeline li:last-child {
-  border-bottom: none;
-}
-
-.year {
-  font-weight: bold;
-  color: #70c1b3;
-  margin-right: 15px;
-  min-width: 100px;
-  text-align: right;
-}
-.section-separator {
-  border: none;
-  height: 2px;
-  background: linear-gradient(to right, #70c1b3, #2a2a2a, #70c1b3);
-  margin: 60px 0;
-  width: 60%;
-  opacity: 0.7;
-  animation: fadeIn 1s forwards;
-}
-    .subheader {
-      background-color: #336699;
-      padding: 15px 30px;
-      border-radius: 8px;
-      font-size: 35px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-top: 40px;
-      margin-bottom: 30px;
-      opacity: 1;
-    }
-
-.research-article {
-  background-color: #f4f6f7;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  animation: fadeIn 1.5s forwards;
-}
-
-.article-info {
-  text-align: center;
-}
-
-.article-title {
-  font-size: 28px;
-  color: #2e4053;
-  margin-bottom: 5px;
-}
-
-.article-authors, .article-journal {
-  font-size: 18px;
-  color: #555;
-  margin: 5px 0;
-}
-
-.doi-button {
-  display: inline-block;
-  margin-top: 5px;
-  background-color: #2A2A2A;
-  color: white;
-  padding: 10px 40px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.doi-button:hover {
-  background-color: #8ebae7;
-  color: #2A2A2A;
-}
-
-.article-plots {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.article-plots img {
-  width: 45%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.article-abstract {
-  font-size: 18px;
-  color: #333;
-  text-align: justify;
-}
-.publication-item {
-  background-color: #f4f6f7; /* Light gray from your theme */
-  padding: 20px;
-  width: 100%;
-  margin: 0 auto 25px auto;
-  border-radius: 8px; /* Matches your card radius */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Subtle shadow like other elements */
-  max-width: 1000px; /* Optimal reading width */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.publication-item:hover {
-  transform: translateX(+20px); /* Subtle hover effect */
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-/* Title styling (matches article-title) */
-.publication-item h3 {
-  font-size: 22px;
-  color: #2e4053; /* Your dark blue-gray */
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-/* Author styling (matches article-authors) */
-.publication-authors {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-/* Journal styling (matches article-journal) */
-.publication-journal {
-  font-size: 15px;
-  color: #666;
-  margin-bottom: 15px;
-}
-.conference-proceeding {
-  background-color: #f4f6f7;
-  padding: 20px;
-  margin: 30px 0;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  text-align: center;
-  animation: fadeIn 1.5s forwards;
-}
-
-.proceeding-title {
-  font-size: 24px;
-  color: #2e4053;
-  margin-bottom: 10px;
-}
-
-.proceeding-journal {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-mjx-container[jax="CHTML"] {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    footer {
-      background: #2a2a2a;
-      color: #fff;
-      padding: 40px 20px;
-      text-align: center;
-      animation: fadeIn 1s forwards 3s;
-    }
-
-    a.footer-link {
-      color: #70c1b3;
-      text-decoration: none;
-    }
-
-    a.footer-link:hover {
-      text-decoration: underline;
-    }
-
-    .highlight {
-      color: #70c1b3;
-    }
-
-    /* Hover Animations for List Items */
-    ul li {
-      font-size: 20px;
-      margin: 10px 0;
-      transition: transform 0.3s ease;
-    }
-
-    ul li:hover {
-      transform: translateX(10px);
-      color: #70c1b3;
-    }
-
-    /* Keyframes */
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes slideInHeader {
-      0% { transform: translateY(-50px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes slideInNav {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(0); }
-    }
-  </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="publications-page">
 
-<nav>
-    <a href="index.html#about">About</a>
-    <a href="index.html#research">Research</a>
-    <a href="talks.html">Talks</a>
-    <a href="teaching.html">Teaching</a>
-    <a href="index.html#contact">Contact</a>
+<!-- NAVBAR -->
+<nav class="top-nav">
+  <div class="nav-container">
+
+    <div class="nav-left">
+      <a href="index.html">Home</a>
+      <a href="publications.html" class="active">Publications</a>
+      <a href="talks.html">Talks</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="cv.html">CV</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="theme-toggle-wrapper">
+        <i class="fas fa-moon toggle-icon moon"></i>
+
+        <label class="theme-switch">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+
+        <i class="fas fa-sun toggle-icon sun"></i>
+      </div>
+    </div>
+
+  </div>
 </nav>
 
-<header>
-  <div class="publications-header">
-    <div class="text-content">
-      <h1>Publications</h1>
-      <p>Complete List of Research Works</p>
+<div class="publications-container">
+<h1>Publications</h1>
+
+  <div class="section-title">Publication Overview</div>
+
+  <div class="metrics">
+
+    <div class="metric-card">
+      <div class="metric-value">9</div>
+      <div class="metric-label">Publications</div>
     </div>
-  </div>
-</header>
 
-<section id="publications">
-    <div style="text-align: center;">
-        <a href="index.html#research" class="doi-button"> &larr; Back to Selected Publications</a>
-      </div>
-  <!-- Journal Articles -->
-  <div class="subheader">Journal Articles</div>
-
-
-
-<div class="publication-item">
-  <span class="publication-year">April 2026</span>
-  <h3>Thermodynamic and transport properties of quark–gluon plasma at finite chemical potential with a DNN framework</h3>
-  <p class="publication-authors">R. K. Tiwari, <strong>K. Goswami</strong>, S. Prasad, C. R. Singh, R. Sahoo, and M. Y. Jamal</p>
-  <p class="publication-journal">arXiv:2604.05858 [hep-ph]</p>
-  <div class="publication-links">
-    <a href="https://arxiv.org/abs/2604.05858" target="_blank" class="doi-button">arXiv</a>
-  </div>
-</div>
-  
-  <div class="publication-item">
-  <span class="publication-year">January 2026</span>
-  <h3>Development of next-generation light-weight ternary Mg–Al–Li alloys for beampipe applications in particle accelerators</h3>
-  <p class="publication-authors">K. Singh, <strong>K. Goswami</strong>, R. Sahoo, and S. Samal</p>
-  <p class="publication-journal">arXiv:2601.12836 [physics.acc-ph]</p>
-  <div class="publication-links">
-    <a href="https://arxiv.org/abs/2601.12836" target="_blank" class="doi-button">arXiv</a>
-  </div>
-</div>
-
-  <div class="publication-item">
-  <span class="publication-year">January 2026</span>
-  <h3>Soret and Dufour effects in hot and dense QCD matter</h3>
-  <p class="publication-authors">K. Singh, <strong>K. Goswami</strong>, and R. Sahoo</p>
-  <p class="publication-journal">Physical Review D <strong>113</strong>, 014040 (2026)</p>
-  <div class="publication-links">
-    <a href="https://doi.org/10.1103/q97t-xs31" target="_blank" class="doi-button">DOI</a>
-    <a href="https://arxiv.org/abs/2509.18946" target="_blank" class="doi-button">arXiv</a>
-  </div>
-</div>
-
-  <div class="publication-item">
-    <span class="publication-year">September 2025</span>
-    <h3>Machine learning driven identification of heavy flavor decay leptons in proton-proton collisions at the Large Hadron Collider</h3>
-    <p class="publication-authors">R. Sahoo, <strong>K. Goswami</strong>, and S. Prasad</p>
-    <p class="publication-journal">arXiv:2509.00712 [hep-ph]</p>
-    <div class="publication-links">
-      <a href="https://arxiv.org/abs/2509.00712" target="_blank" class="doi-button">arXiv</a>
+    <div class="metric-card">
+      <div class="metric-value">72</div>
+      <div class="metric-label">Citations</div>
     </div>
-  </div>
 
-
-<div class="publication-item">
-  <span class="publication-year">April 2026</span>
-  <h3>Partial pressure and susceptibilities of the charmed sector in the van der Waals hadron resonance gas model</h3>
-  <p class="publication-authors"><strong>K. Goswami</strong>, K. K. Pradhan, D. Sahu, and R. Sahoo</p>
-  <p class="publication-journal">Physical Review D <strong>113</strong>, 014042 (2026)</p>
-  <div class="publication-links">
-    <a href="https://doi.org/10.1103/49ks-t17n" target="_blank" class="doi-button">DOI</a>
-    <a href="https://arxiv.org/abs/2508.07716" target="_blank" class="doi-button">arXiv</a>
-  </div>
-</div>
-
-<div class="publication-item">
-  <span class="publication-year">April 2026</span>
-  <h3>Shear viscosity and electrical conductivity of a rotating nuclear medium in the hadron-resonance-gas and Nambu–Jona-Lasinio models</h3>
-  <p class="publication-authors">A. Dwibedi, D. R. J. Marattukalam, N. Padhan, D. Sahu, J. Dey, <strong>K. Goswami</strong>, A. Chatterjee, S. Ghosh, and R. Sahoo</p>
-  <p class="publication-journal">Physical Review C <strong>113</strong>, 044903 (2026)</p>
-  <div class="publication-links">
-    <a href="https://doi.org/10.1103/r4cq-stt7" target="_blank" class="doi-button">DOI</a>
-    <a href="https://arxiv.org/abs/2505.03588" target="_blank" class="doi-button">arXiv</a>
-  </div>
-</div>
-
-<!-- Publication #1 -->
-<div class="publication-item">
-    <span class="publication-year">April 2025</span>
-    <h3>Design and development of advanced Al-Ti-V alloys for beampipe applications in particle accelerators</h3>
-    <p class="publication-authors">Kamaljeet Singh, <strong>Kangkan Goswami</strong>, Raghunath Sahoo, and Sumanta Samal</p>
-    <p class="publication-journal">Physical Review Accelerators and Beams <strong>28</strong>, 043101</p>
-    <div class="publication-links">
-      <a href="https://doi.org/10.1103/PhysRevAccelBeams.28.043101" target="_blank" class="doi-button">DOI</a>
+    <div class="metric-card">
+      <div class="metric-value">6</div>
+      <div class="metric-label">h-index</div>
     </div>
-  </div>
-  
-  <!-- Publication #2 -->
-  <div class="publication-item">
-    <span class="publication-year">January 2025</span>
-    <h3>Can charm fluctuation be a better probe to study the QCD critical point?</h3>
-    <p class="publication-authors"><strong>Kangkan Goswami</strong>, Kshitish Kumar Pradhan, Dushmanta Sahu, Jayanta Dey, and Raghunath Sahoo</p>
-    <p class="publication-journal">Physical Review D <strong>111</strong>, 014029</p>
-    <div class="publication-links">
-      <a href="https://doi.org/10.1103/PhysRevD.111.014029" target="_blank" class="doi-button">DOI</a>
+
+    <div class="metric-card">
+      <div class="metric-value">12</div>
+      <div class="metric-label">Conference Proceedings</div>
     </div>
-  </div>
-  
-  <!-- Publication #3 -->
-  <div class="publication-item">
-    <span class="publication-year">August 2024</span>
-    <h3>Machine learning-based study of open-charm hadrons in proton-proton collisions at the Large Hadron Collider</h3>
-    <p class="publication-authors"><strong>Kangkan Goswami</strong>, Suraj Prasad, Neelkamal Mallick, Raghunath Sahoo, and Gagan B. Mohanty</p>
-    <p class="publication-journal">Physical Review D <strong>110</strong>, 034017</p>
-    <div class="publication-links">
-      <a href="https://doi.org/10.1103/PhysRevD.110.034017" target="_blank" class="doi-button">DOI</a>
+
+    <div class="metric-card">
+      <div class="metric-value">8</div>
+      <div class="metric-label">Average citations per paper</div>
     </div>
-  </div>
-  
-  <!-- Publication #4 -->
-  <div class="publication-item">
-    <span class="publication-year">April 2024</span>
-    <h3>Anisotropy of magnetized quark matter</h3>
-    <p class="publication-authors"><strong>Kangkan Goswami</strong>, Dushmanta Sahu, Jayanta Dey, Raghunath Sahoo, and Reinhard Stock</p>
-    <p class="publication-journal">Physical Review D <strong>109</strong>, 074012</p>
-    <div class="publication-links">
-      <a href="https://doi.org/10.1103/PhysRevD.109.074012" target="_blank" class="doi-button">DOI</a>
-    </div>
-  </div>
-  
-  <!-- Publication #5 -->
-  <div class="publication-item">
-    <span class="publication-year">October 2023</span>
-    <h3>Diffusion and fluctuations of open charmed hadrons in an interacting hadronic medium</h3>
-    <p class="publication-authors"><strong>Kangkan Goswami</strong>, Kshitish Kumar Pradhan, Dushmanta Sahu, and Raghunath Sahoo</p>
-    <p class="publication-journal">Physical Review D <strong>108</strong>, 074011</p>
-    <div class="publication-links">
-      <a href="https://doi.org/10.1103/PhysRevD.108.074011" target="_blank" class="doi-button">DOI</a>
-    </div>
+
   </div>
 
-
-  <div class="publication-item">
-    <span class="publication-year">January 2023</span>
-    <h3>Understanding the QCD medium by the diffusion of charm quarks using a color string percolation model</h3>
-    <p class="publication-authors"><strong>Kangkan Goswami</strong>, Dushmanta Sahu, and Raghunath Sahoo</p>
-    <p class="publication-journal">Physical Review D <strong>107</strong>, 014003</p>
-    <div class="publication-links"><a href="https://doi.org/10.1103/PhysRevD.107.014003" target="_blank" class="doi-button">DOI</a>
-    </div>
+  <div class="cv-small" style="margin-top: 15px;">
+    Full list available on:
+    <a href="#">INSPIRE-HEP</a> ·
+    <a href="#">ORCID</a>
   </div>
 
+<!-- JOURNAL -->
+<div class="section-title">Journal Articles</div>
+<div class="year-block">
+  <div class="year-header">
+    <div></div>  <!-- spacer -->
+    <div class="year-title">2026</div>
+  </div>
+  <div class="pub">
+    <div class="pub-title">Thermodynamic and transport properties of quark–gluon plasma at finite chemical potential with a DNN framework</div>
+    <div class="pub-authors">R. K. Tiwari, <strong>K. Goswami</strong>, S. Prasad, C. R. Singh, R. Sahoo, and M. Y. Jamal</div>
+    <div class="pub-journal">arXiv:2604.05858 (2026)</div>
+    <a href="https://arxiv.org/abs/2604.05858" class="btn btn-arxiv">arXiv</a>
+  </div>
 
-<!-- Conference Proceedings Section -->
-<div class="subheader">Conference Proceedings</div>
+  <div class="pub">
+    <div class="pub-title">Development of next-generation light-weight ternary Mg–Al–Li alloys for beampipe applications in particle accelerators</div>
+    <div class="pub-authors">K. Singh, <strong>K. Goswami</strong>, R. Sahoo, and S. Samal</div>
+    <div class="pub-journal">arXiv:2601.12836 (2026)</div>
+    <a href="https://arxiv.org/abs/2601.12836" class="btn btn-arxiv">arXiv</a>
+  </div>
 
-<!-- Proceeding #1 -->
-<div class="publication-item">
-  <span class="publication-year">2025</span>
-  <h3>Exploring the melting of heavy-flavor hadrons and diffusion of charm quarks</h3>
-  <p class="publication-authors"><strong>Kangkan Goswami</strong>, Kshitish Kumar Pradhan, Dushmanta Sahu, Raghunath Sahoo</p>
-  <p class="publication-journal">PoS QNP2024 (2025) 115</p>
-  <div class="publication-links">
-    <a href="https://doi.org/10.22323/1.465.0115" target="_blank" class="doi-button">Link</a>
+  <div class="pub">
+    <div class="pub-title">Soret and Dufour effects in hot and dense QCD matter</div>
+    <div class="pub-authors">K. Singh, <strong>K. Goswami</strong>, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. D 113, 014040 (2026)</div>
+    <a href="https://doi.org/10.1103/q97t-xs31" class="btn btn-doi">DOI</a>
+    <a href="https://arxiv.org/abs/2509.18946" class="btn btn-arxiv">arXiv</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Partial pressure and susceptibilities of the charmed sector in the van der Waals hadron resonance gas model</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, K. K. Pradhan, D. Sahu, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. D 113, 014042 (2026)</div>
+    <a href="https://doi.org/10.1103/49ks-t17n" class="btn btn-doi">DOI</a>
+    <a href="https://arxiv.org/abs/2508.07716" class="btn btn-arxiv">arXiv</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Shear viscosity and electrical conductivity of a rotating nuclear medium in the hadron-resonance-gas and Nambu–Jona-Lasinio models</div>
+    <div class="pub-authors">A. Dwibedi, D. R. J. Marattukalam, N. Padhan, D. Sahu, J. Dey, <strong>K. Goswami</strong>, A. Chatterjee, S. Ghosh, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. C 113, 044903 (2026)</div>
+    <a href="https://doi.org/10.1103/r4cq-stt7" class="btn btn-doi">DOI</a>
+    <a href="https://arxiv.org/abs/2505.03588" class="btn btn-arxiv">arXiv</a>
   </div>
 </div>
 
-<!-- Proceeding #2 -->
-<div class="publication-item">
-  <span class="publication-year">2025</span>
-  <h3>A study of open-charmed hadrons in p-p collisions using machine learning methods</h3>
-  <p class="publication-authors"><strong>Kangkan Goswami</strong>, Suraj Prasad, Neelkamal Mallick, Raghunath Sahoo, Gagan B. Mohanty</p>
-  <p class="publication-journal">DAE Symp.Nucl.Phys. 68 (2025) 945-946</p>
-  <div class="publication-links">
-    <a href="https://inspirehep.net/files/a2e7eaab01697d8165882b62acfb6c5b" target="_blank" class="doi-button">Link</a>
+<div class="year-block">
+  <div class="year-header">
+    <div></div>  <!-- spacer -->
+    <div class="year-title">2025</div>
+  </div>
+  <div class="pub">
+    <div class="pub-title">Machine learning driven identification of heavy flavor decay leptons in proton-proton collisions at the Large Hadron Collider</div>
+    <div class="pub-authors">R. Sahoo, <strong>K. Goswami</strong>, and S. Prasad</div>
+    <div class="pub-journal">arXiv:2509.00712 (2025)</div>
+    <a href="https://arxiv.org/abs/2509.00712" class="btn btn-arxiv">arXiv</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Design and development of advanced Al–Ti–V alloys for beampipe applications in particle accelerators</div>
+    <div class="pub-authors">K. Singh, <strong>K. Goswami</strong>, R. Sahoo, and S. Samal</div>
+    <div class="pub-journal">Phys. Rev. Accel. Beams 28, 043101 (2025)</div>
+    <a href="https://doi.org/10.1103/PhysRevAccelBeams.28.043101" class="btn btn-doi">DOI</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Can charm fluctuation be a better probe to study the QCD critical point?</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, K. K. Pradhan, D. Sahu, J. Dey, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. D 111, 014029 (2025)</div>
+    <a href="https://doi.org/10.1103/PhysRevD.111.014029" class="btn btn-doi">DOI</a>
   </div>
 </div>
-
-<!-- Proceeding #3 -->
-<div class="publication-item">
-  <span class="publication-year">2024</span>
-  <h3>Drag and Diffusion Coefficients of Charm Quarks in a Hot QCD Medium</h3>
-  <p class="publication-authors"><strong>Kangkan Goswami</strong>, Dushmanta Sahu, Raghunath Sahoo</p>
-  <p class="publication-journal">Springer Proc.Phys. 304 (2024) 1055-1057</p>
-  <div class="publication-links">
-    <a href="https://doi.org/10.1007/978-981-97-0289-3_286" target="_blank" class="doi-button">Link</a>
+<div class="year-block">
+  <div class="year-header">
+    <div></div>  <!-- spacer -->
+    <div class="year-title">2024</div>
   </div>
+  <div class="pub">
+    <div class="pub-title">Machine learning-based study of open-charm hadrons in proton-proton collisions at the Large Hadron Collider</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, S. Prasad, N. Mallick, R. Sahoo, and G. B. Mohanty</div>
+    <div class="pub-journal">Phys. Rev. D 110, 034017 (2024)</div>
+    <a href="https://doi.org/10.1103/PhysRevD.110.034017" class="btn btn-doi">DOI</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Anisotropy of magnetized quark matter</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, D. Sahu, J. Dey, R. Sahoo, and R. Stock</div>
+    <div class="pub-journal">Phys. Rev. D 109, 074012 (2024)</div>
+    <a href="https://doi.org/10.1103/PhysRevD.109.074012" class="btn btn-doi">DOI</a>
+  </div>
+</div> 
+<div class="year-block">
+  <div class="year-header">
+    <div></div>  <!-- spacer -->
+    <div class="year-title">2023</div>
+  </div>
+  <div class="pub">
+    <div class="pub-title">Diffusion and fluctuations of open charmed hadrons in an interacting hadronic medium</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, K. K. Pradhan, D. Sahu, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. D 108, 074011 (2023)</div>
+    <a href="https://doi.org/10.1103/PhysRevD.108.074011" class="btn btn-doi">DOI</a>
+  </div>
+
+  <div class="pub">
+    <div class="pub-title">Understanding the QCD medium by the diffusion of charm quarks using a color string percolation model</div>
+    <div class="pub-authors"><strong>K. Goswami</strong>, D. Sahu, and R. Sahoo</div>
+    <div class="pub-journal">Phys. Rev. D 107, 014003 (2023)</div>
+    <a href="https://doi.org/10.1103/PhysRevD.107.014003" class="btn btn-doi">DOI</a>
+  </div>
+</div> 
+
+
+<!-- CONFERENCE -->
+<div class="section-title">Conference Proceedings</div>
+
+<div class="pub">
+  <div class="pub-title">Diffusion Matrix Related to Charmed State and a New Probe for QCD Critical Point</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">Springer Proc. Phys. 432 (2026)</div>
+  <a href="https://link.springer.com/chapter/10.1007/978-981-95-1513-4_190" class="btn btn-link">Link</a>
 </div>
 
-<!-- Proceeding #4 -->
-<div class="publication-item">
-  <span class="publication-year">2024</span>
-  <h3>Dynamics of charmed hadron in an interacting hadron gas</h3>
-  <p class="publication-authors"><strong>Kangkan Goswami</strong>, Kshitish Kumar Pradhan, Dushmanta Sahu, Raghunath Sahoo</p>
-  <p class="publication-journal">DAE Symp.Nucl.Phys. 67 (2024) 883-884</p>
-  <div class="publication-links">
-    <a href="http://sympnp.org/proceedings/67/D6" target="_blank" class="doi-button">Link</a>
-  </div>
+<div class="pub">
+  <div class="pub-title">Prompt and Non-prompt Production of Open and Hidden Charm Hadrons</div>
+  <div class="pub-authors">S. Prasad, R. Sahoo, <strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">Springer Proc. Phys. 432 (2026)</div>
+  <a href="https://link.springer.com/chapter/10.1007/978-981-95-1513-4_189" class="btn btn-link">Link</a>
 </div>
 
-<!-- Proceeding #5 -->
-<div class="publication-item">
-  <span class="publication-year">2023</span>
-  <h3>Studying the diffusion of charm quarks in a deconfined medium using Color String Percolation approach</h3>
-  <p class="publication-authors"><strong>Kangkan Goswami</strong>, Dushmanta Sahu, Raghunath Sahoo</p>
-  <p class="publication-journal">DAE Symp.Nucl.Phys. 66 (2023) 936-937</p>
-  <div class="publication-links">
-    <a href="http://sympnp.org/proceedings/66/E14.pdf" target="_blank" class="doi-button">Link</a>
-  </div>
+<div class="pub">
+  <div class="pub-title">A novel machine learning method to identify heavy-flavor decay leptons</div>
+  <div class="pub-authors">R. Sahoo, <strong>K. Goswami</strong>, and S. Prasad</div>
+  <div class="pub-journal">DAE Symp. Nucl. Phys. 69 (2023)</div>
+  <a href="https://inspirehep.net/files/bc619edae78570862280be62d273f4f7" class="btn btn-link">Link</a>
 </div>
 
+<div class="pub">
+  <div class="pub-title">Partial pressure of charmed hadrons in an interacting hadronic medium</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">DAE Symp. Nucl. Phys. 69 (2023)</div>
+  <a href="https://inspirehep.net/files/2cab6ca34fc25cbe9f28c72846504c77" class="btn btn-link">Link</a>
+</div>
 
-  <div style="text-align: center;">
-    <a href="index.html#research" class="doi-button">&larr; Back to Selected Publications</a>
-  </div>
-</section>
+<div class="pub">
+  <div class="pub-title">Exploring the QCD medium by studying the diffusion of charm quarks</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">J. Subatomic Part. Cosmol. (2025)</div>
+  <a href="https://doi.org/10.1016/j.jspc.2025.100157" class="btn btn-link">Link</a>
+</div>
 
-<footer>
-    Last updated: May 2025. 
-</footer>
+<div class="pub">
+  <div class="pub-title">Possibility of charm diffusion in an interacting hadronic matter</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">J. Subatomic Part. Cosmol. (2025)</div>
+  <a href="https://sympnp.org/proceedings/67/D6" class="btn btn-link">Link</a>
+</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let lastScrollTop = 0;
-      const nav = document.querySelector("nav");
-    
-      window.addEventListener("scroll", function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-        if (scrollTop > lastScrollTop) {
-          // Scroll down
-          nav.classList.add("hidden");
-        } else {
-          // Scroll up
-          nav.classList.remove("hidden");
-        }
-        lastScrollTop = scrollTop;
-      });
-    });
-    </script>
+<div class="pub">
+  <div class="pub-title">Prompt and non-prompt production of charm hadrons using machine learning</div>
+  <div class="pub-authors">R. Sahoo, <strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">J. Subatomic Part. Cosmol. (2025)</div>
+  <a href="https://doi.org/10.1016/j.jspc.2025.100085" class="btn btn-link">Link</a>
+</div>
+
+<div class="pub">
+  <div class="pub-title">Exploring the melting of heavy-flavor hadrons</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">PoS QNP2024 (2025)</div>
+  <a href="https://doi.org/10.22323/1.465.0115" class="btn btn-link">Link</a>
+</div>
+
+<div class="pub">
+  <div class="pub-title">A study of open-charmed hadrons in p-p collisions</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">DAE Symp. Nucl. Phys. 68 (2023)</div>
+  <a href="https://inspirehep.net/files/a2e7eaab01697d8165882b62acfb6c5b" class="btn btn-link">Link</a>
+</div>
+
+<div class="pub">
+  <div class="pub-title">Drag and Diffusion Coefficients of Charm Quarks</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">Springer Proc. Phys. 304 (2024)</div>
+  <a href="https://doi.org/10.1007/978-981-97-0289-3_286" class="btn btn-link">Link</a>
+</div>
+
+<div class="pub">
+  <div class="pub-title">Dynamics of charmed hadron in an interacting hadron gas</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">DAE Symp. Nucl. Phys. 67 (2024)</div>
+  <a href="https://sympnp.org/proceedings/67/D6" class="btn btn-link">Link</a>
+</div>
+
+<div class="pub">
+  <div class="pub-title">Studying the diffusion of charm quarks in a deconfined medium</div>
+  <div class="pub-authors"><strong>K. Goswami</strong>, et al.</div>
+  <div class="pub-journal">DAE Symp. Nucl. Phys. 66 (2023)</div>
+  <a href="https://www.sympnp.org/proceedings/66/E14.pdf" class="btn btn-link">Link</a>
+</div>
+</div>
+<script src="theme.js"></script>
 </body>
 </html>
