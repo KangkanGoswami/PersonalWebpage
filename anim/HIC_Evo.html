@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spacetime Evolution of Heavy-Ion Matter (t = 0 to Free Streaming)</title>
+<style>
+  :root {
+    --bg-dark: #080a0f;
+    --panel-bg: rgba(14, 18, 28, 0.88);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --accent-blue: #38bdf8;
+    --accent-amber: #fbbf24;
+    --accent-magenta: #f43f5e;
+    --accent-green: #34d399;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+  }
+
+  /* Canvas area */
+  #canvas-container {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    background: radial-gradient(circle at center, #111827 0%, #080a0f 100%);
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Top telemetry badge */
+  .top-telemetry {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    gap: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-feature-settings: "tnum";
+  }
+
+  /* Current Stage Indicator */
+  .stage-badge {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-align: right;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+  }
+
+  .stage-num {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    letter-spacing: 1px;
+  }
+
+  .stage-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--text-main);
+  }
+
+  .stage-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    max-width: 280px;
+  }
+
+  /* Floating Legend */
+  .legend-box {
+    position: absolute;
+    bottom: 110px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 18px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+    font-size: 12px;
+  }
+
+  .legend-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .legend-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Controls Overlay at Bottom */
+  .bottom-hud {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(850px, 92%);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .timeline-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  button.active {
+    background: var(--accent-blue);
+    color: #000;
+    border-color: var(--accent-blue);
+  }
+
+  .slider-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .slider-control input[type="range"] {
+    width: 110px;
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="simCanvas"></canvas>
+
+  <div class="top-telemetry">
+    <div class="stat-item">
+      <span class="stat-label">Proper Time (&tau;)</span>
+      <span class="stat-val" id="val-tau">0.00 fm/c</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Temperature (T)</span>
+      <span class="stat-val" id="val-temp" style="color: #fbbf24;">480 MeV</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Energy Density (&epsilon;)</span>
+      <span class="stat-val" id="val-eps" style="color: #f43f5e;">35.0 GeV/fm&sup3;</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">State of Matter</span>
+      <span class="stat-val" id="val-state" style="color: #38bdf8;">Glasma / Flux Tubes</span>
+    </div>
+  </div>
+
+  <div class="stage-badge">
+    <div class="stage-num" id="stage-badge-num">Stage 1 of 5</div>
+    <div class="stage-title" id="stage-badge-title">Glasma & Color Flux Tubes</div>
+    <div class="stage-desc" id="stage-badge-desc">Coherent longitudinal chromo-electromagnetic flux tubes form between receding nuclei at t = 0.</div>
+  </div>
+
+  <div class="legend-box">
+    <div class="legend-title">Microscopic Entities</div>
+    <div class="legend-items">
+      <div class="legend-item"><div class="legend-dot" style="background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></div> Glasma Field / Gluons</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #fbbf24; box-shadow: 0 0 6px #fbbf24;"></div> Quarks (u, d, s)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #f43f5e; box-shadow: 0 0 6px #f43f5e;"></div> Antiquarks (&umacr;, d&#772;, s&#772;)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #a855f7; box-shadow: 0 0 6px #a855f7;"></div> Mesons (&pi;, K)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #34d399; box-shadow: 0 0 6px #34d399;"></div> Baryons (p, n)</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #ffffff; border: 1px dashed #aaa;"></div> Freeze-Out Surface</div>
+    </div>
+  </div>
+
+  <div class="bottom-hud">
+    <div class="timeline-container">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">t = 0</span>
+      <input type="range" class="timeline-slider" id="timelineSlider" min="0" max="15" step="0.01" value="0">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">t = 15 fm/c</span>
+    </div>
+
+    <div class="controls-row">
+      <div class="btn-group">
+        <button id="btnPlay">Pause</button>
+        <button id="btnReset">Restart (t=0)</button>
+        <button id="btnView">View: Transverse (X-Y)</button>
+      </div>
+
+      <div class="slider-control">
+        <span>Impact param (b):</span>
+        <input type="range" id="sliderB" min="0" max="8" step="0.5" value="0">
+        <span id="labelB" style="color: var(--text-main); font-weight: bold; width: 35px;">0 fm</span>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-speed" data-speed="0.25">0.25x</button>
+        <button class="btn-speed active" data-speed="1.0">1x</button>
+        <button class="btn-speed" data-speed="2.0">2x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * Spacetime Evolution Simulation: Glasma -> Pre-equilibrium -> QGP -> Freeze-outs -> Free Streaming
+ */
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height, centerX, centerY;
+let isPlaying = true;
+let speedMult = 1.0;
+let tau = 0.0; // Proper time in fm/c [0 -> 15]
+let impactB = 0; // Impact parameter in fm
+let viewMode = 'transverse'; // 'transverse' or 'longitudinal'
+
+// Physical parameters
+const TAU_MAX = 15.0; // fm/c
+const T_GLASMA = 480; // MeV
+const T_CHEM_FREEZEOUT = 155; // MeV
+const T_KIN_FREEZEOUT = 110; // MeV
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  centerX = width / 2;
+  centerY = height / 2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Particle Entities
+class MicroParticle {
+  constructor(id, type, x, y, z, vx, vy, vz) {
+    this.id = id;
+    this.type = type; // 'flux', 'gluon', 'quark', 'antiquark', 'meson', 'baryon'
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.vx = vx;
+    this.vy = vy;
+    this.vz = vz;
+    this.charge = (type === 'quark') ? (Math.random() > 0.4 ? 1 : -1) : (type === 'antiquark' ? -1 : 0);
+    this.active = true;
+    this.hadronType = ''; // 'pi+', 'pi-', 'pi0', 'p', 'n'
+  }
+}
+
+// Generate base microscopic state
+let particles = [];
+let fluxTubes = [];
+
+function initCollisionState() {
+  particles = [];
+  fluxTubes = [];
+  const count = 350;
+
+  // Longitudinal flux filaments between passing nuclei
+  const numTubes = 28;
+  for (let i = 0; i < numTubes; i++) {
+    // Eccentricity dependent on b
+    const radX = 60 * (1 - (impactB / 14));
+    const radY = 60;
+    const ang = Math.random() * Math.PI * 2;
+    const r = Math.sqrt(Math.random());
+    const x = r * radX * Math.cos(ang);
+    const y = r * radY * Math.sin(ang);
+    fluxTubes.push({
+      x: x,
+      y: y,
+      phase: Math.random() * Math.PI * 2,
+      intensity: 1.0,
+      radius: 6 + Math.random() * 8
+    });
+  }
+
+  // Base microscopic particles
+  for (let i = 0; i < count; i++) {
+    const radX = 55 * (1 - (impactB / 14));
+    const radY = 55;
+    const angle = Math.random() * Math.PI * 2;
+    const r = Math.sqrt(Math.random());
+    const px = r * radX * Math.cos(angle);
+    const py = r * radY * Math.sin(angle);
+    const pz = (Math.random() - 0.5) * 15;
+
+    // Thermal / flow velocity initial distribution
+    // Pressure gradient along x is stronger for b > 0 (elliptic anisotropy)
+    const px_boost = (1 + (impactB / 8) * 0.7);
+    const vMag = 0.5 + Math.random() * 0.5;
+    const phi = angle;
+    const vx = Math.cos(phi) * vMag * px_boost;
+    const vy = Math.sin(phi) * vMag;
+    const vz = (Math.random() - 0.5) * 0.4;
+
+    particles.push(new MicroParticle(i, 'gluon', px, py, pz, vx, vy, vz));
+  }
+}
+
+initCollisionState();
+
+// Physical formulas for temperature & energy density
+function getThermodynamics(t) {
+  let temp, eps, phaseName;
+  if (t < 0.2) {
+    // Glasma stage
+    temp = T_GLASMA;
+    eps = 35.0 - (t / 0.2) * 8.0;
+    phaseName = "Glasma (Chromo-fields)";
+  } else if (t < 0.6) {
+    // Pre-equilibrium
+    temp = T_GLASMA - (t - 0.2) * 250;
+    eps = 27.0 - (t - 0.2) * 25;
+    phaseName = "Pre-Equilibrium Thermalization";
+  } else if (t < 4.5) {
+    // Relativistic Hydro QGP (Bjorken cooling ~ tau^(-1/3))
+    const tau_norm = t / 0.6;
+    temp = 380 * Math.pow(tau_norm, -0.333);
+    eps = 17.0 * Math.pow(tau_norm, -1.333);
+    phaseName = "Hydrodynamic QGP Expansion";
+  } else if (t < 8.0) {
+    // Chemical Freeze-out & Hadronization (Tc ~ 155 MeV)
+    const tau_norm = t / 4.5;
+    temp = T_CHEM_FREEZEOUT * Math.pow(tau_norm, -0.25);
+    eps = 1.0 * Math.pow(tau_norm, -1.0);
+    phaseName = "Chemical Freeze-Out / Hadronization";
+  } else if (t < 11.5) {
+    // Hadron Resonance Gas & Kinetic Freeze-Out (Tkin ~ 110 MeV)
+    temp = T_KIN_FREEZEOUT * Math.max(0.6, (1 - (t - 8.0) * 0.08));
+    eps = 0.3 * Math.max(0.1, (1 - (t - 8.0) * 0.15));
+    phaseName = "Interacting Hadron Gas & Kinetic Freeze-Out";
+  } else {
+    // Free Streaming
+    temp = 40;
+    eps = 0.02;
+    phaseName = "Free Streaming to Detectors";
+  }
+
+  return { temp: Math.max(10, Math.round(temp)), eps: Math.max(0.01, eps.toFixed(2)), state: phaseName };
+}
+
+// Stage descriptive badges
+function updateBadges(t) {
+  const badgeNum = document.getElementById('stage-badge-num');
+  const badgeTitle = document.getElementById('stage-badge-title');
+  const badgeDesc = document.getElementById('stage-badge-desc');
+
+  if (t < 0.2) {
+    badgeNum.textContent = "Stage 1 of 5";
+    badgeTitle.textContent = "Glasma & Color Flux Tubes (t = 0)";
+    badgeDesc.textContent = "High-density coherent longitudinal chromo-electric/magnetic flux tubes form immediately between the passing Lorentz pancakes.";
+  } else if (t < 0.6) {
+    badgeNum.textContent = "Stage 2 of 5";
+    badgeTitle.textContent = "Pre-Equilibrium & Thermalization";
+    badgeDesc.textContent = "Flux tubes decay into hard gluons and qq̄ pairs. Intense non-equilibrium collisions drive the system to local thermal equilibrium.";
+  } else if (t < 4.5) {
+    badgeNum.textContent = "Stage 3 of 5";
+    badgeTitle.textContent = "Hydrodynamic QGP Expansion";
+    badgeDesc.textContent = "Nearly perfect liquid expands with relativistic viscous hydrodynamics, converting spatial geometry into momentum anisotropy (v₂).";
+  } else if (t < 8.0) {
+    badgeNum.textContent = "Stage 4 of 5";
+    badgeTitle.textContent = "Hadronization (Chemical Freeze-Out)";
+    badgeDesc.textContent = "At T_c ≈ 155 MeV, colored quarks & gluons recombine into color-singlet mesons & baryons. Inelastic chemistry permanently locks.";
+  } else if (t < 11.5) {
+    badgeNum.textContent = "Stage 5 of 5";
+    badgeTitle.textContent = "Hadron Gas & Kinetic Freeze-Out";
+    badgeDesc.textContent = "Hadrons scatter elastically until mean free path > system size (T_kin ≈ 110 MeV), locking final track momentum spectra.";
+  } else {
+    badgeNum.textContent = "Decoupled";
+    badgeTitle.textContent = "Free Streaming";
+    badgeDesc.textContent = "Hadrons stream outward ballistically without collisions, bending under the experimental solenoidal magnetic field.";
+  }
+}
+
+// Render loop
+function draw() {
+  ctx.fillStyle = '#080a0f';
+  ctx.fillRect(0, 0, width, height);
+
+  // Grid / axes in transverse view
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 150, 0, Math.PI * 2);
+  ctx.arc(centerX, centerY, 280, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 1. DRAW STAGE 1: GLASMA FLUX TUBES (0 <= tau < 0.6)
+  if (tau < 0.6) {
+    const glasmaAlpha = (tau < 0.2) ? 0.9 : (1 - (tau - 0.2) / 0.4) * 0.9;
+    
+    if (viewMode === 'transverse') {
+      // Transverse flux tube cross-sections
+      fluxTubes.forEach(ft => {
+        const pulse = 1 + 0.15 * Math.sin(Date.now() * 0.01 + ft.phase);
+        const grad = ctx.createRadialGradient(
+          centerX + ft.x, centerY + ft.y, 0,
+          centerX + ft.x, centerY + ft.y, ft.radius * pulse
+        );
+        grad.addColorStop(0, `rgba(56, 189, 248, ${glasmaAlpha})`);
+        grad.addColorStop(0.6, `rgba(14, 165, 233, ${glasmaAlpha * 0.5})`);
+        grad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(centerX + ft.x, centerY + ft.y, ft.radius * pulse, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else {
+      // Longitudinal view: Long flux tubes stretching along z-axis
+      fluxTubes.forEach(ft => {
+        const zLength = 120 + tau * 400;
+        ctx.strokeStyle = `rgba(56, 189, 248, ${glasmaAlpha * 0.7})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(centerX - zLength / 2, centerY + ft.y);
+        ctx.lineTo(centerX + zLength / 2, centerY + ft.y);
+        ctx.stroke();
+      });
+    }
+  }
+
+  // 2. HYDRODYNAMIC EXPANDING FLUID GLOW (0.2 < tau < 8.0)
+  if (tau >= 0.2 && tau <= 8.5) {
+    const qgpAlpha = (tau < 4.5) ? 0.45 : (1 - (tau - 4.5) / 4.0) * 0.45;
+    const expandScale = 1 + (tau - 0.2) * 0.4;
+    const radX = (55 * (1 - impactB / 14)) * expandScale * (1 + (impactB/8)*0.2);
+    const radY = 55 * expandScale;
+
+    const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(radX, radY));
+    if (tau < 2.0) {
+      grad.addColorStop(0, `rgba(251, 191, 36, ${qgpAlpha * 1.2})`); // White-yellow hot
+      grad.addColorStop(0.4, `rgba(244, 63, 94, ${qgpAlpha})`);
+      grad.addColorStop(1, 'rgba(244, 63, 94, 0)');
+    } else {
+      grad.addColorStop(0, `rgba(244, 63, 94, ${qgpAlpha})`); // Cooling purple-magenta
+      grad.addColorStop(0.6, `rgba(168, 85, 247, ${qgpAlpha * 0.6})`);
+      grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+    }
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(radX / 100, radY / 100);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 100, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Subtle freeze-out boundary contour
+    if (tau > 3.0 && tau < 8.0) {
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.scale(radX / 100, radY / 100);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.25 * (1 - (tau-3)/5)})`;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 95, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // 3. MICROSCOPIC PARTICLES (Quarks, Gluons, Hadrons)
+  particles.forEach((p, idx) => {
+    // Time evolution of particle coordinates
+    const tNorm = tau;
+    let posX = centerX + p.x + p.vx * tNorm * 18;
+    let posY = centerY + p.y + p.vy * tNorm * 18;
+
+    // Longitudinal view projection
+    if (viewMode === 'longitudinal') {
+      posX = centerX + (p.vz * tNorm * 45) + (p.x * 0.2);
+      posY = centerY + p.y + p.vy * tNorm * 18;
+    }
+
+    // Phase transitions & particle type evolution
+    let color = '#38bdf8'; // Gluon blue
+    let pSize = 2.5;
+
+    if (tau < 0.2) {
+      // Glasma state
+      color = '#38bdf8';
+      pSize = 2;
+    } else if (tau < 0.6) {
+      // Pre-equilibrium: pair creation (quarks/antiquarks emerge)
+      if (idx % 3 === 0) {
+        color = '#fbbf24'; // Quark (amber)
+      } else if (idx % 3 === 1) {
+        color = '#f43f5e'; // Antiquark (magenta)
+      } else {
+        color = '#38bdf8'; // Gluon
+      }
+    } else if (tau < 4.5) {
+      // QGP thermal plasma
+      if (idx % 3 === 0) color = '#fbbf24';
+      else if (idx % 3 === 1) color = '#f43f5e';
+      else color = '#38bdf8';
+      pSize = 3;
+    } else if (tau < 11.5) {
+      // Hadronization / Hadron gas: bound mesons & baryons
+      if (idx % 4 === 0) {
+        color = '#34d399'; // Proton / Neutron (green)
+        pSize = 4.0;
+      } else {
+        color = '#a855f7'; // Pions / Kaons (purple)
+        pSize = 3.2;
+      }
+    } else {
+      // Free streaming with magnetic track bending
+      if (idx % 4 === 0) {
+        color = '#34d399';
+        pSize = 3.5;
+      } else {
+        color = '#a855f7';
+        pSize = 3.0;
+      }
+
+      // Magnetic field curvature (Lorentz force in transverse plane)
+      if (viewMode === 'transverse' && p.charge !== 0) {
+        const bend = (tau - 11.5) * 0.08 * p.charge;
+        posX += Math.sin(bend) * 20;
+        posY += (1 - Math.cos(bend)) * 20;
+      }
+    }
+
+    // Draw particle
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(posX, posY, pSize, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Telemetry updates
+  const thermo = getThermodynamics(tau);
+  document.getElementById('val-tau').textContent = tau.toFixed(2) + " fm/c";
+  document.getElementById('val-temp').textContent = thermo.temp + " MeV";
+  document.getElementById('val-eps').textContent = thermo.eps + " GeV/fm³";
+  document.getElementById('val-state').textContent = thermo.state;
+  document.getElementById('timelineSlider').value = tau;
+  updateBadges(tau);
+
+  // Step simulation time
+  if (isPlaying) {
+    tau += 0.02 * speedMult;
+    if (tau > TAU_MAX) {
+      tau = 0; // Loop back to t = 0
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// UI Event Handlers
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+  btnPlay.classList.toggle('active', !isPlaying);
+});
+
+const btnReset = document.getElementById('btnReset');
+btnReset.addEventListener('click', () => {
+  tau = 0;
+  initCollisionState();
+});
+
+const btnView = document.getElementById('btnView');
+btnView.addEventListener('click', () => {
+  if (viewMode === 'transverse') {
+    viewMode = 'longitudinal';
+    btnView.textContent = "View: Longitudinal (Z-X)";
+  } else {
+    viewMode = 'transverse';
+    btnView.textContent = "View: Transverse (X-Y)";
+  }
+});
+
+const sliderTimeline = document.getElementById('timelineSlider');
+sliderTimeline.addEventListener('input', (e) => {
+  tau = parseFloat(e.target.value);
+});
+
+const sliderB = document.getElementById('sliderB');
+sliderB.addEventListener('input', (e) => {
+  impactB = parseFloat(e.target.value);
+  document.getElementById('labelB').textContent = impactB + " fm";
+  initCollisionState();
+});
+
+const speedButtons = document.querySelectorAll('.btn-speed');
+speedButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    speedButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    speedMult = parseFloat(btn.dataset.speed);
+  });
+});
+
+// Kick off animation
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

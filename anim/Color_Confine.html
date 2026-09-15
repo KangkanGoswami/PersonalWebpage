@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lund String Model: Color Confinement & Hadronization</title>
+<style>
+  :root {
+    --bg-dark: #07090e;
+    --panel-bg: rgba(13, 17, 27, 0.9);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --accent-blue: #38bdf8;
+    --accent-gold: #fbbf24;
+    --accent-rose: #f43f5e;
+    --accent-green: #34d399;
+    --accent-purple: #c084fc;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+  }
+
+  #canvas-container {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    background: radial-gradient(circle at center, #0f172a 0%, #07090e 100%);
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Telemetry Panel */
+  .top-telemetry {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-feature-settings: "tnum";
+  }
+
+  /* Educational Stage Badge */
+  .stage-badge {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    text-align: right;
+    backdrop-filter: blur(12px);
+    z-index: 10;
+    max-width: 400px;
+  }
+
+  .stage-num {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    letter-spacing: 1px;
+  }
+
+  .stage-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--text-main);
+  }
+
+  .stage-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Formula Reference Box */
+  .formula-box {
+    position: absolute;
+    bottom: 110px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 18px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .formula-title {
+    font-weight: bold;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .formula-math {
+    color: var(--accent-gold);
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  /* Bottom Controls HUD */
+  .bottom-hud {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(850px, 92%);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .timeline-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  button.active {
+    background: var(--accent-blue);
+    color: #000;
+    border-color: var(--accent-blue);
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="simCanvas"></canvas>
+
+  <!-- Real-time Telemetry -->
+  <div class="top-telemetry">
+    <div class="stat-item">
+      <span class="stat-label">Separation (r)</span>
+      <span class="stat-val" id="val-sep">0.30 fm</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Field Energy (E = &kappa;r)</span>
+      <span class="stat-val" id="val-energy" style="color: #fbbf24;">0.30 GeV</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">String Tension (&kappa;)</span>
+      <span class="stat-val" id="val-tension" style="color: #38bdf8;">~ 1.0 GeV/fm (~16 tons)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Confinement State</span>
+      <span class="stat-val" id="val-state" style="color: #34d399;">Single Bound String</span>
+    </div>
+  </div>
+
+  <!-- Stage Badge -->
+  <div class="stage-badge">
+    <div class="stage-num" id="badge-num">Stage 1 of 4</div>
+    <div class="stage-title" id="badge-title">Primary q-q&#772; Pair Production</div>
+    <div class="stage-desc" id="badge-desc">An energetic quark and antiquark fly apart with high kinetic energy following a hard collision.</div>
+  </div>
+
+  <!-- Physics Formula Reference -->
+  <div class="formula-box">
+    <div class="formula-title">Lund Model & Quantum Tunneling</div>
+    <div class="formula-math">V(r) = &kappa; &middot; r &nbsp;(&kappa; &approx; 1 GeV/fm)</div>
+    <div class="formula-math" style="margin-top: 4px; color: var(--accent-rose);">P &prop; exp(-&pi; m&#8869;&sup2; / &kappa;)</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">Schwinger non-perturbative pair creation</div>
+  </div>
+
+  <!-- Bottom Timeline & Controls -->
+  <div class="bottom-hud">
+    <div class="timeline-container">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">t = 0 (Creation)</span>
+      <input type="range" class="timeline-slider" id="timeSlider" min="0" max="100" step="0.05" value="0">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">Hadronization (Free Mesons)</span>
+    </div>
+
+    <div class="controls-row">
+      <div class="btn-group">
+        <button id="btnPlay">Pause</button>
+        <button id="btnRestart">Restart</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="stage-jump" data-target="5">Creation</button>
+        <button class="stage-jump" data-target="32">String Stretch</button>
+        <button class="stage-jump" data-target="58">String Snap</button>
+        <button class="stage-jump" data-target="88">Meson Formation</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-speed" data-speed="0.5">0.5x</button>
+        <button class="btn-speed active" data-speed="1.0">1x</button>
+        <button class="btn-speed" data-speed="2.0">2x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height, centerX, centerY;
+let isPlaying = true;
+let speedMult = 1.0;
+let progress = 0; // 0 to 100
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  centerX = width / 2;
+  centerY = height / 2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Color definitions for SU(3) charges
+const C_RED = '#f43f5e';
+const C_ANTI_RED = '#38bdf8'; // Cyan is complementary anti-red
+const C_GREEN = '#34d399';
+const C_ANTI_GREEN = '#c084fc'; // Magenta is anti-green
+
+function getStageInfo(p) {
+  if (p < 25) {
+    const r = (0.3 + (p / 25) * 0.9).toFixed(2);
+    const e = (r * 1.0).toFixed(2);
+    return {
+      sep: `${r} fm`,
+      energy: `${e} GeV`,
+      state: "Single Stretched String",
+      badgeNum: "Stage 1 of 4",
+      title: "Hard Scattering & Primary Color String",
+      desc: "Energetic back-to-back quark and antiquark recede. Unlike QED, self-interacting gluons compress color lines into a 1D tube of uniform energy density."
+    };
+  } else if (p < 55) {
+    const r = (1.2 + ((p - 25) / 30) * 1.3).toFixed(2);
+    const e = (r * 1.0).toFixed(2);
+    return {
+      sep: `${r} fm`,
+      energy: `${e} GeV`,
+      state: "Critical Tension Threshold",
+      badgeNum: "Stage 2 of 4",
+      title: "Linear Potential & Energy Accumulation",
+      desc: "Energy stored in the flux tube grows linearly with separation: E = κr. At ~2 GeV, it becomes energetically favorable to create a new quark pair."
+    };
+  } else if (p < 75) {
+    return {
+      sep: "Snapped (2 Sub-systems)",
+      energy: "Converted to Masses + Momenta",
+      state: "Schwinger Tunneling: String Breaks",
+      badgeNum: "Stage 3 of 4",
+      title: "Schwinger Pair Creation (String Snaps)",
+      desc: "A virtual q'q̄' pair tunnels out of the vacuum via the Schwinger mechanism (P ∝ exp(-πm⊥²/κ)). The string snaps into two independent color-singlets."
+    };
+  } else {
+    return {
+      sep: "> 4.0 fm (Decoupled)",
+      energy: "Invariant Masses Locked",
+      state: "Color-Singlet Hadrons (π, K)",
+      badgeNum: "Stage 4 of 4",
+      title: "Hadronization (Color Confinement)",
+      desc: "Free quarks never emerge in isolation! The fragments form colorless mesons (e.g. u-d̄ → π⁺, d-ū → π⁻) flying apart as physical detector jets."
+    };
+  }
+}
+
+// Draw a dynamic fluctuating gluon flux tube
+function drawFluxTube(x1, y1, x2, y2, time, colorA, colorB, intensity = 1.0, isTense = false) {
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  const segments = Math.max(16, Math.floor(dist / 14));
+  const dx = (x2 - x1) / segments;
+  const dy = (y2 - y1) / segments;
+  const normalX = -(y2 - y1) / dist;
+  const normalY = (x2 - x1) / dist;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+
+  for (let i = 1; i < segments; i++) {
+    const frac = i / segments;
+    const px = x1 + dx * i;
+    const py = y1 + dy * i;
+    // Vibrational frequency increases with tension
+    const freq = isTense ? 16 : 8;
+    const amp = (isTense ? 8 : 4) * Math.sin(frac * Math.PI) * intensity;
+    const wave = Math.sin(time * freq + i * 0.8) * amp;
+
+    ctx.lineTo(px + normalX * wave, py + normalY * wave);
+  }
+  ctx.lineTo(x2, y2);
+
+  // Gradient representing color / anti-color flux
+  const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+  grad.addColorStop(0, colorA);
+  grad.addColorStop(0.5, '#ffffff');
+  grad.addColorStop(1, colorB);
+
+  // Outer glow
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = isTense ? 6 : 4;
+  ctx.shadowColor = isTense ? '#fbbf24' : colorA;
+  ctx.shadowBlur = isTense ? 16 : 8;
+  ctx.stroke();
+
+  // Bright central string core
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#ffffff';
+  ctx.shadowBlur = 0;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+// Draw single quark entity
+function drawQuark(x, y, flavor, charge, color, isAnti = false, scale = 1.0) {
+  ctx.save();
+  const radius = 15 * scale;
+
+  // Quantum halo glow
+  const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 2.2);
+  glow.addColorStop(0, color);
+  glow.addColorStop(0.6, color.replace(')', ', 0.35)').replace('rgb', 'rgba'));
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, radius * 2.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Quark Flavor Label
+  ctx.fillStyle = '#0f172a';
+  ctx.font = `bold ${Math.round(13 * scale)}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const label = isAnti ? `${flavor}̄` : flavor;
+  ctx.fillText(label, x, y);
+
+  // Electric charge subtitle
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = `${Math.round(10 * scale)}px Arial`;
+  ctx.fillText(charge, x, y + radius + 12);
+
+  ctx.restore();
+}
+
+// Draw Hadron Oval Shell (Color-neutral singlet bound state)
+function drawMesonBoundary(x1, y1, x2, y2, name, alpha) {
+  const midX = (x1 + x2) / 2;
+  const midY = (y1 + y2) / 2;
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(midX, midY);
+  ctx.rotate(angle);
+
+  // Dashed oval representing color-neutral meson volume
+  ctx.strokeStyle = 'rgba(52, 211, 153, 0.7)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, dist * 0.75 + 18, 30, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Meson physical tag
+  ctx.fillStyle = '#34d399';
+  ctx.font = 'bold 12px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(name, 0, -36);
+
+  ctx.restore();
+}
+
+function draw(timestamp) {
+  ctx.fillStyle = '#07090e';
+  ctx.fillRect(0, 0, width, height);
+
+  const time = timestamp * 0.001;
+
+  // Coordinate frame & baseline
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, centerY);
+  ctx.lineTo(width, centerY);
+  ctx.stroke();
+
+  // Dynamic separation distance of the primary pair
+  const maxSep = Math.min(width * 0.42, 380);
+
+  if (progress < 55) {
+    // -------------------------------------------------------------
+    // PHASE 1 & 2: Continuous string stretching
+    // -------------------------------------------------------------
+    const stretchFrac = progress / 55;
+    const currentSep = 50 + stretchFrac * (maxSep - 50);
+    const isCritical = progress > 35;
+
+    const q1X = centerX - currentSep;
+    const q2X = centerX + currentSep;
+
+    // Draw connecting Lund string
+    drawFluxTube(q1X, centerY, q2X, centerY, time, C_RED, C_ANTI_RED, 1.0 + stretchFrac, isCritical);
+
+    // Primary quarks: u (red) and ū (anti-red)
+    drawQuark(q1X, centerY, 'u', '+2/3', C_RED, false);
+    drawQuark(q2X, centerY, 'u', '-2/3', C_ANTI_RED, true);
+
+    // Potential energy diagram representation in the background
+    if (progress > 10) {
+      const potH = stretchFrac * 120;
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(q1X, centerY - 45);
+      ctx.lineTo(centerX, centerY - 45 - potH);
+      ctx.lineTo(q2X, centerY - 45);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.8)';
+      ctx.font = '11px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(`Stored String Energy: V(r) = κ · r`, centerX, centerY - 55 - potH);
+    }
+
+  } else if (progress < 75) {
+    // -------------------------------------------------------------
+    // PHASE 3: Quantum Tunneling & String Snapping (Schwinger Pair)
+    // -------------------------------------------------------------
+    const snapFrac = (progress - 55) / 20;
+    const currentSep = maxSep + snapFrac * 60;
+
+    // Outer primary quarks continuing outward
+    const q1X = centerX - currentSep;
+    const q2X = centerX + currentSep;
+
+    // Newly formed virtual pair in the vacuum at center: d and d̄
+    const pairSeparation = Math.min(70, snapFrac * 110);
+    const newPairX1 = centerX - pairSeparation; // d̄ (anti-quark) pairing with u
+    const newPairX2 = centerX + pairSeparation; // d (quark) pairing with ū
+
+    // Two independent sub-strings contracting / forming
+    drawFluxTube(q1X, centerY, newPairX1, centerY, time, C_RED, C_ANTI_RED, 0.8, false);
+    drawFluxTube(newPairX2, centerY, q2X, centerY, time, C_GREEN, C_ANTI_GREEN, 0.8, false);
+
+    // Primary quarks
+    drawQuark(q1X, centerY, 'u', '+2/3', C_RED, false);
+    drawQuark(q2X, centerY, 'u', '-2/3', C_ANTI_RED, true);
+
+    // Newly created vacuum pair (Schwinger tunneling flash)
+    const flashAlpha = Math.max(0, 1.0 - snapFrac * 1.5);
+    if (flashAlpha > 0) {
+      ctx.save();
+      ctx.fillStyle = `rgba(255, 255, 255, ${flashAlpha * 0.6})`;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 35 * flashAlpha + 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // New pair: d̄ (anti-green) and d (green)
+    drawQuark(newPairX1, centerY, 'd', '+1/3', C_ANTI_RED, true, 0.95);
+    drawQuark(newPairX2, centerY, 'd', '-1/3', C_GREEN, false, 0.95);
+
+    // Annotation
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText("String Snaps! Vacuum qq̄ pair created", centerX, centerY - 65);
+
+  } else {
+    // -------------------------------------------------------------
+    // PHASE 4: Stable Hadron Separation (Color-Neutral Mesons)
+    // -------------------------------------------------------------
+    const postFrac = (progress - 75) / 25;
+    const clusterOffset = (maxSep + 60) + postFrac * 140;
+
+    // Left Meson Center (π⁺ = u d̄)
+    const m1X = centerX - clusterOffset;
+    const q1X = m1X - 35;
+    const q2X = m1X + 35;
+
+    // Right Meson Center (π⁻ = d ū)
+    const m2X = centerX + clusterOffset;
+    const q3X = m2X - 35;
+    const q4X = m2X + 35;
+
+    // Internal sub-flux tubes holding each meson together
+    drawFluxTube(q1X, centerY, q2X, centerY, time, C_RED, C_ANTI_RED, 0.5, false);
+    drawFluxTube(q3X, centerY, q4X, centerY, time, C_GREEN, C_ANTI_GREEN, 0.5, false);
+
+    // Left Meson Quarks
+    drawQuark(q1X, centerY, 'u', '+2/3', C_RED, false, 0.9);
+    drawQuark(q2X, centerY, 'd', '+1/3', C_ANTI_RED, true, 0.9);
+
+    // Right Meson Quarks
+    drawQuark(q3X, centerY, 'd', '-1/3', C_GREEN, false, 0.9);
+    drawQuark(q4X, centerY, 'u', '-2/3', C_ANTI_GREEN, true, 0.9);
+
+    // Hadron envelope indicators
+    drawMesonBoundary(q1X, centerY, q2X, centerY, "Pion (π⁺ = ud̄, Q = +1)", 1.0);
+    drawMesonBoundary(q3X, centerY, q4X, centerY, "Pion (π⁻ = dū, Q = -1)", 1.0);
+
+    // Final educational message
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText("Result: 2 Independent Colorless Mesons (No Isolated Color Charges)", centerX, centerY + 85);
+  }
+
+  // Telemetry & UI update
+  const info = getStageInfo(progress);
+  document.getElementById('val-sep').textContent = info.sep;
+  document.getElementById('val-energy').textContent = info.energy;
+  document.getElementById('val-state').textContent = info.state;
+  document.getElementById('badge-num').textContent = info.badgeNum;
+  document.getElementById('badge-title').textContent = info.title;
+  document.getElementById('badge-desc').textContent = info.desc;
+  document.getElementById('timeSlider').value = progress;
+
+  // Step timeline
+  if (isPlaying) {
+    progress += 0.12 * speedMult;
+    if (progress > 100) {
+      progress = 0; // Loop seamlessly
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// UI Event Handlers
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+  btnPlay.classList.toggle('active', !isPlaying);
+});
+
+const btnRestart = document.getElementById('btnRestart');
+btnRestart.addEventListener('click', () => {
+  progress = 0;
+});
+
+const slider = document.getElementById('timeSlider');
+slider.addEventListener('input', (e) => {
+  progress = parseFloat(e.target.value);
+});
+
+const stageJumps = document.querySelectorAll('.stage-jump');
+stageJumps.forEach(btn => {
+  btn.addEventListener('click', () => {
+    progress = parseFloat(btn.dataset.target);
+  });
+});
+
+const speedButtons = document.querySelectorAll('.btn-speed');
+speedButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    speedButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    speedMult = parseFloat(btn.dataset.speed);
+  });
+});
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

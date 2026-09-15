@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Powers of Ten: From Wooden Cube to Quarks</title>
+<style>
+  :root {
+    --bg-dark: #07090e;
+    --panel-bg: rgba(13, 17, 27, 0.9);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --accent-blue: #38bdf8;
+    --accent-gold: #fbbf24;
+    --accent-rose: #f43f5e;
+    --accent-green: #34d399;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+  }
+
+  #canvas-container {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    background: radial-gradient(circle at center, #0f172a 0%, #07090e 100%);
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .top-telemetry {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-feature-settings: "tnum";
+  }
+
+  .stage-badge {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    text-align: right;
+    backdrop-filter: blur(12px);
+    z-index: 10;
+    max-width: 380px;
+  }
+
+  .stage-num {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    letter-spacing: 1px;
+  }
+
+  .stage-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--text-main);
+  }
+
+  .stage-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .scale-meter {
+    position: absolute;
+    left: 24px;
+    bottom: 110px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px 18px;
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+
+  .scale-bar {
+    width: 140px;
+    height: 4px;
+    background: var(--accent-blue);
+    margin-top: 6px;
+    position: relative;
+    border-radius: 2px;
+  }
+
+  .scale-bar::before, .scale-bar::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    width: 2px;
+    height: 12px;
+    background: var(--accent-blue);
+  }
+  .scale-bar::before { left: 0; }
+  .scale-bar::after { right: 0; }
+
+  .bottom-hud {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(850px, 92%);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .timeline-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  button.active {
+    background: var(--accent-blue);
+    color: #000;
+    border-color: var(--accent-blue);
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="simCanvas"></canvas>
+
+  <div class="top-telemetry">
+    <div class="stat-item">
+      <span class="stat-label">Spatial Scale (d)</span>
+      <span class="stat-val" id="val-scale">0.1 m (10 cm)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Order of Magnitude</span>
+      <span class="stat-val" id="val-order" style="color: #38bdf8;">10⁻¹ m</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Dominant Physics</span>
+      <span class="stat-val" id="val-force" style="color: #fbbf24;">Classical Mechanics</span>
+    </div>
+  </div>
+
+  <div class="stage-badge">
+    <div class="stage-num" id="badge-num">Level 1 of 5</div>
+    <div class="stage-title" id="badge-title">10 cm Wooden Cube</div>
+    <div class="stage-desc" id="badge-desc">A macroscopic wooden block (cellulose / organic polymer matrix). Zooming toward the carbon atoms that form its backbone.</div>
+  </div>
+
+  <div class="scale-meter">
+    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;" id="scale-legend-txt">Field Width: 10 cm</div>
+    <div class="scale-bar"></div>
+  </div>
+
+  <div class="bottom-hud">
+    <div class="timeline-container">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">Cube (10 cm)</span>
+      <input type="range" class="timeline-slider" id="zoomSlider" min="0" max="100" step="0.05" value="0">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">Quarks (10⁻¹⁸ m)</span>
+    </div>
+
+    <div class="controls-row">
+      <div class="btn-group">
+        <button id="btnPlay">Pause</button>
+        <button id="btnRestart">Restart</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="stage-jump" data-target="0">Wooden Cube</button>
+        <button class="stage-jump" data-target="25">Carbon Atom</button>
+        <button class="stage-jump" data-target="50">¹²C Nucleus</button>
+        <button class="stage-jump" data-target="75">Proton</button>
+        <button class="stage-jump" data-target="100">Quarks & Gluons</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-speed" data-speed="0.5">0.5x</button>
+        <button class="btn-speed active" data-speed="1.0">1x</button>
+        <button class="btn-speed" data-speed="2.0">2x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height, centerX, centerY;
+let isPlaying = true;
+let speedMult = 1.0;
+let zoomProgress = 0;
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  centerX = width / 2;
+  centerY = height / 2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Carbon-12 Nucleus: Exactly 6 Protons and 6 Neutrons
+const carbonNucleons = [
+  { isProton: true,  x: -16, y: -12, z:  8, phase: 0.2 },
+  { isProton: true,  x:  14, y: -14, z: -6, phase: 1.1 },
+  { isProton: true,  x: -18, y:  14, z: -8, phase: 2.3 },
+  { isProton: true,  x:  18, y:  12, z:  6, phase: 3.5 },
+  { isProton: true,  x:   0, y:   0, z: 18, phase: 4.2 },
+  { isProton: true,  x:   2, y: -24, z: -4, phase: 5.0 },
+
+  { isProton: false, x:   0, y:  18, z: -12, phase: 0.8 },
+  { isProton: false, x: -22, y:  -2, z: -10, phase: 1.7 },
+  { isProton: false, x:  20, y:  -4, z:  10, phase: 2.9 },
+  { isProton: false, x:  -4, y: -18, z:  12, phase: 3.8 },
+  { isProton: false, x:  -8, y:  20, z:   6, phase: 4.7 },
+  { isProton: false, x:   0, y:   0, z: -18, phase: 5.6 }
+];
+
+// Carbon-12 Electron Orbitals: 6 Electrons (1s² 2s² 2p²)
+const electrons = [
+  { r: 45, speed: 4.0, tilt: 0.3, phase: 0 },
+  { r: 45, speed: 4.0, tilt: 0.3, phase: Math.PI },
+  { r: 135, speed: 2.2, tilt: 0.8, phase: 0.4 },
+  { r: 135, speed: 2.2, tilt: 0.8, phase: 0.4 + Math.PI },
+  { r: 155, speed: 1.8, tilt: -0.9, phase: 1.2 },
+  { r: 155, speed: 1.8, tilt: -0.9, phase: 1.2 + Math.PI }
+];
+
+// 3 Valence Quarks inside Proton (uud)
+const quarks = [
+  { flavor: 'u', charge: '+2/3', color: '#f43f5e', baseAngle: 0 },
+  { flavor: 'u', charge: '+2/3', color: '#38bdf8', baseAngle: (2 * Math.PI) / 3 },
+  { flavor: 'd', charge: '-1/3', color: '#34d399', baseAngle: (4 * Math.PI) / 3 }
+];
+
+const colorPalette = ['#f43f5e', '#38bdf8', '#34d399'];
+
+function getStageInfo(p) {
+  if (p < 20) {
+    return {
+      scale: (0.1 * Math.pow(10, -(p / 20) * 8)).toExponential(1) + " m",
+      order: `10⁻${1 + Math.floor((p / 20) * 8)} m`,
+      force: "Electromagnetism / Chemistry",
+      badgeNum: "Level 1 of 5",
+      title: "10 cm Wooden Cube",
+      desc: "A solid wooden cube (~10 cm). Organic wood is primarily cellulose (C₆H₁₀O₅)ₙ held together by covalent and hydrogen bonds.",
+      legend: "Field Width: ~10 cm"
+    };
+  } else if (p < 45) {
+    return {
+      scale: "1.5 × 10⁻¹⁰ m (1.5 Å)",
+      order: `10⁻¹⁰ m (0.15 nm)`,
+      force: "QED (Coulomb Potential)",
+      badgeNum: "Level 2 of 5",
+      title: "The Carbon Atom (¹²C)",
+      desc: "A carbon atom from the wood fiber: 6 electrons in quantum orbitals (1s² 2s² 2p²) surrounding a nucleus 10,000× smaller. 99.9999% empty space.",
+      legend: "Field Width: ~0.2 nm (2 Å)"
+    };
+  } else if (p < 70) {
+    return {
+      scale: "5.4 × 10⁻¹⁵ m (5.4 fm)",
+      order: `10⁻¹⁵ m (fm scale)`,
+      force: "Residual Strong Force (Yukawa)",
+      badgeNum: "Level 3 of 5",
+      title: "Carbon-12 Nucleus (6p + 6n)",
+      desc: "6 Protons (rose) and 6 Neutrons (cyan) bound in a tight nuclear cluster via pion exchange, overcoming electromagnetic proton repulsion.",
+      legend: "Field Width: ~8 fm"
+    };
+  } else if (p < 88) {
+    return {
+      scale: "0.8 × 10⁻¹⁵ m (0.8 fm)",
+      order: `10⁻¹⁵ m (0.8 fm)`,
+      force: "QCD (Color Confinement)",
+      badgeNum: "Level 4 of 5",
+      title: "Inside a Proton of Carbon",
+      desc: "A proton is a relativistic composite state: 3 valence quarks (two Up, one Down) bound within ~0.8 fm by non-Abelian SU(3) gluon fields.",
+      legend: "Field Width: ~1.5 fm"
+    };
+  } else {
+    return {
+      scale: "< 10⁻¹⁸ m",
+      order: `10⁻¹⁸ m (Point-like)`,
+      force: "Asymptotic Freedom (QCD)",
+      badgeNum: "Level 5 of 5",
+      title: "Quarks & Gluon Flux Tubes",
+      desc: "Point-like quarks exchanging color charge via 8 gluons. Self-interacting gluons compress into tight color-flux tubes with string tension ~1 GeV/fm.",
+      legend: "Field Width: < 0.1 fm"
+    };
+  }
+}
+
+function draw(timestamp) {
+  ctx.fillStyle = '#07090e';
+  ctx.fillRect(0, 0, width, height);
+
+  const time = timestamp * 0.001;
+
+  // -------------------------------------------------------------
+  // LEVEL 1: 3D Isometric Wooden Cube (p: 0 -> 25)
+  // -------------------------------------------------------------
+  if (zoomProgress < 25) {
+    const alpha = (zoomProgress < 15) ? 1.0 : (1.0 - (zoomProgress - 15) / 10);
+    const scale = Math.pow(1.085, zoomProgress);
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(scale, scale);
+    ctx.globalAlpha = alpha;
+
+    const S = 95; // Base cube half-width
+
+    // Top Face (Light warm oak)
+    ctx.beginPath();
+    ctx.moveTo(0, -S * 0.95);
+    ctx.lineTo(S * 1.35, -S * 0.28);
+    ctx.lineTo(0, S * 0.4);
+    ctx.lineTo(-S * 1.35, -S * 0.28);
+    ctx.closePath();
+    ctx.fillStyle = '#b5835a';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Wood Grain rings on Top Face
+    ctx.save();
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(74, 43, 20, 0.35)';
+    ctx.lineWidth = 1.8;
+    for (let r = 18; r < 200; r += 22) {
+      ctx.beginPath();
+      ctx.ellipse(0, -S * 0.28, r * 1.25, r * 0.48, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Left Face (Mid-tone shadow)
+    ctx.beginPath();
+    ctx.moveTo(-S * 1.35, -S * 0.28);
+    ctx.lineTo(0, S * 0.4);
+    ctx.lineTo(0, S * 1.6);
+    ctx.lineTo(-S * 1.35, S * 0.92);
+    ctx.closePath();
+    ctx.fillStyle = '#8c5934';
+    ctx.fill();
+    ctx.stroke();
+
+    // Wood grain lines on Left Face
+    ctx.save();
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(56, 31, 13, 0.35)';
+    ctx.lineWidth = 1.6;
+    for (let gy = -80; gy < 180; gy += 18) {
+      ctx.beginPath();
+      ctx.moveTo(-S * 1.4, gy);
+      ctx.lineTo(10, gy + S * 0.7);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Right Face (Deep shadow)
+    ctx.beginPath();
+    ctx.moveTo(0, S * 0.4);
+    ctx.lineTo(S * 1.35, -S * 0.28);
+    ctx.lineTo(S * 1.35, S * 0.92);
+    ctx.lineTo(0, S * 1.6);
+    ctx.closePath();
+    ctx.fillStyle = '#6a4023';
+    ctx.fill();
+    ctx.stroke();
+
+    // Central crosshair & zoom target on the cube face
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(0, 0, 16, 0, Math.PI * 2);
+    ctx.moveTo(-24, 0); ctx.lineTo(24, 0);
+    ctx.moveTo(0, -24); ctx.lineTo(0, 24);
+    ctx.stroke();
+
+    // Target label
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText("Zooming into Carbon Lattice", 0, 32);
+
+    ctx.restore();
+  }
+
+  // -------------------------------------------------------------
+  // LEVEL 2: Carbon Atom (Z = 6) (p: 15 -> 50)
+  // -------------------------------------------------------------
+  if (zoomProgress >= 15 && zoomProgress < 52) {
+    const alpha = (zoomProgress < 22) ? (zoomProgress - 15) / 7 :
+                  (zoomProgress > 42) ? (1.0 - (zoomProgress - 42) / 10) : 1.0;
+    const radius = Math.max(10, 160 * Math.pow(1.08, (zoomProgress - 20)));
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.globalAlpha = alpha;
+
+    const grad = ctx.createRadialGradient(0, 0, 5, 0, 0, Math.min(width, radius));
+    grad.addColorStop(0, 'rgba(56, 189, 248, 0.03)');
+    grad.addColorStop(0.3, 'rgba(56, 189, 248, 0.16)');
+    grad.addColorStop(0.7, 'rgba(14, 165, 233, 0.05)');
+    grad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    electrons.forEach((elec) => {
+      ctx.save();
+      ctx.rotate(elec.tilt);
+
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, elec.r * (radius / 150), elec.r * 0.45 * (radius / 150), 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const eAng = time * elec.speed + elec.phase;
+      const ex = Math.cos(eAng) * (elec.r * (radius / 150));
+      const ey = Math.sin(eAng) * (elec.r * 0.45 * (radius / 150));
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.restore();
+    });
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(0, 0, Math.min(18, 3 + (zoomProgress - 15) * 0.4), 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // -------------------------------------------------------------
+  // LEVEL 3: Carbon-12 Nucleus (6p + 6n) (p: 42 -> 76)
+  // -------------------------------------------------------------
+  if (zoomProgress >= 42 && zoomProgress < 76) {
+    const alpha = (zoomProgress < 48) ? (zoomProgress - 42) / 6 :
+                  (zoomProgress > 68) ? (1.0 - (zoomProgress - 68) / 8) : 1.0;
+    const scale = Math.pow(1.06, zoomProgress - 45);
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.scale(scale, scale);
+    ctx.globalAlpha = alpha;
+
+    const nucGlow = ctx.createRadialGradient(0, 0, 15, 0, 0, 60);
+    nucGlow.addColorStop(0, 'rgba(251, 191, 36, 0.18)');
+    nucGlow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+    ctx.fillStyle = nucGlow;
+    ctx.beginPath();
+    ctx.arc(0, 0, 60, 0, Math.PI * 2);
+    ctx.fill();
+
+    carbonNucleons.sort((a, b) => a.z - b.z);
+
+    carbonNucleons.forEach((nuc) => {
+      const wobble = Math.sin(time * 3 + nuc.phase) * 1.2;
+      const px = nuc.x + wobble;
+      const py = nuc.y + wobble;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 11, 0, Math.PI * 2);
+
+      if (nuc.isProton) {
+        ctx.fillStyle = '#f43f5e';
+      } else {
+        ctx.fillStyle = '#38bdf8';
+      }
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 9px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(nuc.isProton ? 'p' : 'n', px, py);
+    });
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.restore();
+  }
+
+  // -------------------------------------------------------------
+  // LEVEL 4 & 5: Inside a Single Proton (p: 68 -> 100)
+  // -------------------------------------------------------------
+  if (zoomProgress >= 68) {
+    const alpha = (zoomProgress < 74) ? (zoomProgress - 68) / 6 : 1.0;
+    const detailBoost = (zoomProgress - 68) / 32;
+    const bagRadius = 140 + detailBoost * 40;
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.globalAlpha = alpha;
+
+    ctx.strokeStyle = `rgba(251, 191, 36, ${0.4 - detailBoost * 0.2})`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.arc(0, 0, bagRadius, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const quarkCoords = quarks.map((q, idx) => {
+      const ang = q.baseAngle + time * 1.2;
+      const dist = 70 + Math.sin(time * 3 + idx) * 15;
+      return {
+        x: Math.cos(ang) * dist,
+        y: Math.sin(ang) * dist,
+        colorIndex: (idx + Math.floor(time * 1.5)) % 3,
+        flavor: q.flavor,
+        charge: q.charge
+      };
+    });
+
+    ctx.lineWidth = 4 + detailBoost * 3;
+    for (let i = 0; i < 3; i++) {
+      const q1 = quarkCoords[i];
+      const q2 = quarkCoords[(i + 1) % 3];
+
+      ctx.beginPath();
+      ctx.moveTo(q1.x, q1.y);
+
+      const segments = 12;
+      for (let s = 1; s < segments; s++) {
+        const frac = s / segments;
+        const lx = q1.x + (q2.x - q1.x) * frac;
+        const ly = q1.y + (q2.y - q1.y) * frac;
+        const perpX = -(q2.y - q1.y) / 60;
+        const perpY = (q2.x - q1.x) / 60;
+        const wave = Math.sin(time * 8 + s * 1.5) * (6 + detailBoost * 4);
+
+        ctx.lineTo(lx + perpX * wave, ly + perpY * wave);
+      }
+      ctx.lineTo(q2.x, q2.y);
+
+      const fluxGrad = ctx.createLinearGradient(q1.x, q1.y, q2.x, q2.y);
+      fluxGrad.addColorStop(0, colorPalette[q1.colorIndex]);
+      fluxGrad.addColorStop(0.5, '#ffffff');
+      fluxGrad.addColorStop(1, colorPalette[q2.colorIndex]);
+      ctx.strokeStyle = fluxGrad;
+      ctx.stroke();
+    }
+
+    quarkCoords.forEach((qc) => {
+      const qRadius = 14 + detailBoost * 8;
+      const qColor = colorPalette[qc.colorIndex];
+      const qGlow = ctx.createRadialGradient(qc.x, qc.y, 0, qc.x, qc.y, qRadius * 2);
+      qGlow.addColorStop(0, qColor);
+      qGlow.addColorStop(0.6, qColor.replace(')', ', 0.3)').replace('rgb', 'rgba'));
+      qGlow.addColorStop(1, 'rgba(0,0,0,0)');
+
+      ctx.fillStyle = qGlow;
+      ctx.beginPath();
+      ctx.arc(qc.x, qc.y, qRadius * 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(qc.x, qc.y, qRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(qc.flavor, qc.x, qc.y);
+
+      if (zoomProgress > 80) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '10px Arial';
+        ctx.fillText(qc.charge, qc.x, qc.y + qRadius + 10);
+      }
+    });
+
+    if (zoomProgress > 82) {
+      const seaCount = 14;
+      for (let s = 0; s < seaCount; s++) {
+        const sAng = (s / seaCount) * Math.PI * 2 + time * 0.8;
+        const sDist = 30 + Math.sin(time * 4 + s) * 20;
+        const sx = Math.cos(sAng) * sDist;
+        const sy = Math.sin(sAng) * sDist;
+
+        ctx.fillStyle = (s % 2 === 0) ? 'rgba(244, 63, 94, 0.6)' : 'rgba(56, 189, 248, 0.6)';
+        ctx.beginPath();
+        ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  const info = getStageInfo(zoomProgress);
+  document.getElementById('val-scale').textContent = info.scale;
+  document.getElementById('val-order').textContent = info.order;
+  document.getElementById('val-force').textContent = info.force;
+  document.getElementById('badge-num').textContent = info.badgeNum;
+  document.getElementById('badge-title').textContent = info.title;
+  document.getElementById('badge-desc').textContent = info.desc;
+  document.getElementById('scale-legend-txt').textContent = info.legend;
+  document.getElementById('zoomSlider').value = zoomProgress;
+
+  if (isPlaying) {
+    zoomProgress += 0.08 * speedMult;
+    if (zoomProgress > 100) {
+      zoomProgress = 0;
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+  btnPlay.classList.toggle('active', !isPlaying);
+});
+
+const btnRestart = document.getElementById('btnRestart');
+btnRestart.addEventListener('click', () => {
+  zoomProgress = 0;
+});
+
+const slider = document.getElementById('zoomSlider');
+slider.addEventListener('input', (e) => {
+  zoomProgress = parseFloat(e.target.value);
+});
+
+const stageJumps = document.querySelectorAll('.stage-jump');
+stageJumps.forEach(btn => {
+  btn.addEventListener('click', () => {
+    zoomProgress = parseFloat(btn.dataset.target);
+  });
+});
+
+const speedButtons = document.querySelectorAll('.btn-speed');
+speedButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    speedButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    speedMult = parseFloat(btn.dataset.speed);
+  });
+});
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

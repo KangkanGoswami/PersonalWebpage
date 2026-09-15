@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animations | Kangkan Goswami</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError : false
+        });">
+    </script>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container nav-inner">
+        <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">Kangkan Goswami</a>
+        <div class="nav-links">
+            <a href="index.html#publications">Publications</a>
+            <a href="talks.html">Talks</a>
+            <a href="teaching.html">Teaching</a>
+            <a href="animations.html" style="color: var(--academic-blue);">Animations</a>
+            <a href="cv.html">CV</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <section class="section">
+        <div class="section-header-row">
+            <div>
+                <span class="hero-label">Interactive Physics</span>
+                <h2 class="section-header" style="margin-top: 4px;">High-Energy Physics Simulations</h2>
+            </div>
+        </div>
+        <p style="margin-top: 14px; max-width: 780px; color: var(--text-muted); line-height: 1.6;">
+            Numerical simulations and interactive phase-space models covering QCD confinement, relativistic hydrodynamic expansion, heavy-quark transport, and multi-scale hadronic structures.
+        </p>
+
+        <div class="bento-grid nav-cards" style="margin-top: 32px;">
+            <!-- 1. Powers of Ten: Cube to Quarks -->
+            <a href="anim/Cube_to_Quark.html" target="_blank" class="bento-card nav-tile">
+                <div class="tile-icon"><i class="fas fa-search-plus"></i></div>
+                <div class="tile-content">
+                    <h3>From Wooden Cube to Quarks</h3>
+                    <p>
+                        A continuous logarithmic zoom across 17 orders of magnitude[cite: 3]. Transitions from macroscopic cellulose ($10^{-1}\text{ m}$)[cite: 3] down to atomic orbitals ($10^{-10}\text{ m}$)[cite: 3], the $^{12}\text{C}$ nucleus ($10^{-15}\text{ m}$)[cite: 3], and confined quarks with gluon flux tubes[cite: 3].
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right tile-arrow"></i>
+            </a>
+
+            <!-- 2. Color Confinement & Hadronization -->
+            <a href="anim/Color_Confine.html" target="_blank" class="bento-card nav-tile">
+                <div class="tile-icon"><i class="fas fa-draw-polygon"></i></div>
+                <div class="tile-content">
+                    <h3>Color Confinement</h3>
+                    <p>
+                        Visualizing the linear confinement potential $V(r) = \kappa r$[cite: 2]. Illustrates non-perturbative Schwinger quantum tunneling[cite: 2], color flux tube breakage[cite: 2], and the transition into colorless asymptotic mesons ($\pi^+, \pi^-$)[cite: 2].
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right tile-arrow"></i>
+            </a>
+
+            <!-- 3. Heavy Ion Collider Simulation -->
+            <a href="anim/HIC_Sim.html" target="_blank" class="bento-card nav-tile">
+                <div class="tile-icon"><i class="fas fa-atom"></i></div>
+                <div class="tile-content">
+                    <h3>Heavy-Ion Collision & QGP</h3>
+                    <p>
+                        Spacetime dynamics of ultra-relativistic $\text{Pb}\text{--}\text{Pb}$ collisions at $\sqrt{s_{\mathrm{NN}}} = 5.02\text{ TeV}$[cite: 5]. Features Lorentz contraction[cite: 5], initial Glauber overlap geometry[cite: 5], pressure-driven elliptic flow ($v_2$)[cite: 5], and Cooper-Frye hypersurface hadronization[cite: 5].
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right tile-arrow"></i>
+            </a>
+
+            <!-- 4. Spacetime Evolution of Heavy-Ion Matter -->
+            <a href="anim/HIC_Evo.html" target="_blank" class="bento-card nav-tile">
+                <div class="tile-icon"><i class="fas fa-project-diagram"></i></div>
+                <div class="tile-content">
+                    <h3>Spacetime Evolution of HIC</h3>
+                    <p>
+                        Chronological progression through early Glasma flux tubes ($t=0$)[cite: 4], pre-equilibrium thermalization[cite: 4], hydrodynamic Bjorken cooling[cite: 4], chemical/kinetic freeze-out[cite: 4], and final-state free streaming[cite: 4].
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right tile-arrow"></i>
+            </a>
+
+            <!-- 5. Charm Quark Brownian Motion -->
+            <a href="anim/Brownian_Motion.html" target="_blank" class="bento-card nav-tile">
+                <div class="tile-icon"><i class="fas fa-random"></i></div>
+                <div class="tile-content">
+                    <h3>Charm Quark Brownian Motion</h3>
+                    <p>
+                        Langevin stochastic transport of a charm quark inside a dense quark-gluon bath[cite: 1]. Demonstrates collisional energy loss, momentum dissipation $|p(t)|$[cite: 1], directional drag[cite: 1], and relaxation toward the thermal Jüttner equilibrium[cite: 1].
+                    </p>
+                </div>
+                <i class="fas fa-arrow-right tile-arrow"></i>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 Kangkan Goswami • IIT Indore • ALICE, CERN</p>
+        <p style="margin-top: 8px; opacity: 0.5;">Last updated: September, 2026.</p>
+    </div>
+</footer>
+
+</body>
+</html>

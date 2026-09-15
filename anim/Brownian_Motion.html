@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charm Quark Brownian Motion in Dense QGP</title>
+<style>
+  :root {
+    --bg-dark: #07090e;
+    --panel-bg: rgba(13, 17, 27, 0.92);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --accent-blue: #38bdf8;
+    --accent-gold: #fbbf24;
+    --accent-rose: #f43f5e;
+    --accent-green: #34d399;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    user-select: none;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+  }
+
+  #canvas-container {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    background: radial-gradient(circle at center, #0f172a 0%, #07090e 100%);
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .top-telemetry {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-feature-settings: "tnum";
+  }
+
+  .stage-badge {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    text-align: right;
+    backdrop-filter: blur(12px);
+    z-index: 10;
+    max-width: 420px;
+  }
+
+  .stage-num {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    letter-spacing: 1px;
+  }
+
+  .stage-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--text-main);
+  }
+
+  .stage-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .bottom-hud {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(880px, 92%);
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .timeline-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  button.active {
+    background: var(--accent-blue);
+    color: #000;
+    border-color: var(--accent-blue);
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="simCanvas"></canvas>
+
+  <div class="top-telemetry">
+    <div class="stat-item">
+      <span class="stat-label">Elapsed Time (t)</span>
+      <span class="stat-val" id="val-time">0.00 fm/c</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Charm Momentum (|p|)</span>
+      <span class="stat-val" id="val-mom" style="color: #fbbf24;">4.50 GeV/c</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Bath Density</span>
+      <span class="stat-val" id="val-dense" style="color: #38bdf8;">Dense (450 partons)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">State</span>
+      <span class="stat-val" id="val-state" style="color: #f43f5e;">Directional Drag Phase</span>
+    </div>
+  </div>
+
+  <div class="stage-badge">
+    <div class="stage-num" id="badge-num">Langevin Relaxation in Dense Bath</div>
+    <div class="stage-title" id="badge-title">High-pT Injection into Dense QGP</div>
+    <div class="stage-desc" id="badge-desc">The charm quark enters with high kinetic energy, continuously plowing through a dense sea of light quarks and gluons. Frequent collisions provide smooth drag and realistic Brownian wander.</div>
+  </div>
+
+  <div class="bottom-hud">
+    <div class="timeline-container">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">t = 0 (Injection)</span>
+      <input type="range" class="timeline-slider" id="timeSlider" min="0" max="100" step="0.05" value="0">
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: bold;">t ≈ 12 fm/c (Thermalized)</span>
+    </div>
+
+    <div class="controls-row">
+      <div class="btn-group">
+        <button id="btnPlay">Pause</button>
+        <button id="btnRestart">Restart Event</button>
+        <button id="btnTrail" class="active">Toggle Trail</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="stage-jump" data-target="0">Injection</button>
+        <button class="stage-jump" data-target="30">Deceleration</button>
+        <button class="stage-jump" data-target="65">Brownian Walk</button>
+        <button class="stage-jump" data-target="100">Equilibrium</button>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-speed" data-speed="0.5">0.5x</button>
+        <button class="btn-speed active" data-speed="1.0">1x</button>
+        <button class="btn-speed" data-speed="2.0">2x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height;
+let isPlaying = true;
+let speedMult = 1.0;
+let progress = 0;
+let showTrail = true;
+
+// 2D Chamber Geometry
+let boxX, boxY, boxW, boxH;
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+
+  boxX = 50;
+  boxY = 110;
+  boxW = Math.min(width * 0.60, width - 420);
+  boxH = height - 230;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// -------------------------------------------------------------
+// DENSE THERMAL MEDIUM BATH (450 particles)
+// -------------------------------------------------------------
+const NUM_PARTONS = 450;
+const bathPartons = [];
+
+function initBath() {
+  bathPartons.length = 0;
+  for (let i = 0; i < NUM_PARTONS; i++) {
+    const r = Math.random();
+    let color, radius;
+    if (r < 0.45) {
+      color = '#fbbf24'; radius = 2.0; // u, d light quarks (amber)
+    } else if (r < 0.65) {
+      color = '#f43f5e'; radius = 2.3; // s quarks (rose)
+    } else {
+      color = '#38bdf8'; radius = 1.6; // gluons (blue)
+    }
+
+    const ang = Math.random() * Math.PI * 2;
+    const speed = 0.8 + Math.random() * 1.8;
+
+    bathPartons.push({
+      x: boxX + 10 + Math.random() * (boxW - 20),
+      y: boxY + 10 + Math.random() * (boxH - 20),
+      vx: Math.cos(ang) * speed,
+      vy: Math.sin(ang) * speed,
+      color: color,
+      radius: radius
+    });
+  }
+}
+initBath();
+
+// -------------------------------------------------------------
+// CHARM QUARK CLASS (Stable, Visually Representative Brownian Motion)
+// -------------------------------------------------------------
+class CharmQuark {
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.radius = 15;
+    this.x = boxX + 60;
+    this.y = boxY + boxH * 0.5;
+
+    // Smooth momentum vector components (GeV/c)
+    this.px = 4.5;
+    this.py = 0.2;
+
+    this.trail = [];
+    this.pHistory = [];
+  }
+
+  step(dt) {
+    // 1. Current momentum magnitude
+    const pCurrent = Math.hypot(this.px, this.py);
+
+    // 2. Physical Drag & Random Noise (Balanced for smooth visual realism)
+    // As progress advances, drag reduces the directed forward momentum
+    const dragCoeff = 0.035;
+    this.px *= (1.0 - dragCoeff);
+    this.py *= (1.0 - dragCoeff);
+
+    // Stochastic kick amplitude scales up as it thermalizes to maintain a stable ~0.8 GeV Brownian jitter
+    const thermalTarget = 0.82; // Thermal momentum ~ sqrt(2*m*T)
+    const kickMag = 0.11;
+    const randAng = Math.random() * Math.PI * 2;
+    this.px += Math.cos(randAng) * kickMag;
+    this.py += Math.sin(randAng) * kickMag;
+
+    // Minimum thermal floor so it never freezes completely
+    const pNew = Math.hypot(this.px, this.py);
+    if (progress > 60 && pNew < thermalTarget * 0.75) {
+      const boost = (thermalTarget * 0.75) / (pNew + 1e-5);
+      this.px *= boost;
+      this.py *= boost;
+    }
+
+    // 3. Coordinate Update (Velocity conversion scaled for smooth visual motion)
+    const vScale = 1.35;
+    this.x += this.px * vScale * dt * 25;
+    this.y += this.py * vScale * dt * 25;
+
+    // 4. Elastic Specular Reflection off Box Walls (Guaranteed inside container)
+    const minX = boxX + this.radius;
+    const maxX = boxX + boxW - this.radius;
+    const minY = boxY + this.radius;
+    const maxY = boxY + boxH - this.radius;
+
+    if (this.x < minX) {
+      this.x = minX;
+      this.px = Math.abs(this.px);
+    } else if (this.x > maxX) {
+      this.x = maxX;
+      this.px = -Math.abs(this.px);
+    }
+
+    if (this.y < minY) {
+      this.y = minY;
+      this.py = Math.abs(this.py);
+    } else if (this.y > maxY) {
+      this.y = maxY;
+      this.py = -Math.abs(this.py);
+    }
+
+    // Record trail for Brownian path visualization
+    this.trail.push({ x: this.x, y: this.y, p: pNew });
+    if (this.trail.length > 280) this.trail.shift();
+
+    this.pHistory.push(pNew);
+    if (this.pHistory.length > 180) this.pHistory.shift();
+  }
+}
+
+const charm = new CharmQuark();
+
+// -------------------------------------------------------------
+// ANALYTICAL DIAGNOSTICS PANELS (Right Side)
+// -------------------------------------------------------------
+function drawDiagnostics(currentP) {
+  const insetW = Math.min(320, width - (boxX + boxW) - 40);
+  const insetX = boxX + boxW + 28;
+  const insetH = (boxH - 16) / 2;
+
+  // 1. TOP PANEL: SPECTRUM RELAXATION P(p)
+  const topY = boxY;
+  ctx.save();
+  ctx.fillStyle = 'rgba(13, 17, 27, 0.94)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+  ctx.lineWidth = 1.5;
+  ctx.roundRect(insetX, topY, insetW, insetH, 12);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 11px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText("MOMENTUM DISTRIBUTION P(p)", insetX + insetW / 2, topY + 22);
+
+  const ox = insetX + 44;
+  const oy = topY + insetH - 36;
+  const pw = insetW - 62;
+  const ph = insetH - 65;
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(ox, oy);
+  ctx.lineTo(ox + pw, oy);
+  ctx.moveTo(ox, oy);
+  ctx.lineTo(ox, oy - ph);
+  ctx.stroke();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px Arial';
+  ctx.fillText("p (GeV/c)", ox + pw - 14, oy + 20);
+
+  // Equilibrium Thermal Curve f(p) \propto p * exp(-E/T)
+  const maxP = 5.0;
+  ctx.strokeStyle = '#34d399';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let p = 0; p <= maxP; p += 0.05) {
+    const val = p * Math.exp(-Math.sqrt(p * p + 1.27 * 1.27) / 0.30);
+    const px = ox + (p / maxP) * pw;
+    const py = oy - (val / 0.11) * (ph * 0.85);
+    if (p === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Instantaneous Charm Quark Momentum Marker
+  const markerX = ox + (Math.min(maxP, currentP) / maxP) * pw;
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(markerX, oy);
+  ctx.lineTo(markerX, oy - ph * 0.88);
+  ctx.stroke();
+
+  ctx.fillStyle = '#fbbf24';
+  ctx.beginPath();
+  ctx.arc(markerX, oy - ph * 0.88, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${currentP.toFixed(2)} GeV/c`, markerX, oy - ph * 0.88 - 8);
+
+  ctx.fillStyle = '#34d399';
+  ctx.textAlign = 'left';
+  ctx.fillText("— Thermal Jüttner f(p)", ox + 14, topY + 44);
+  ctx.restore();
+
+  // 2. BOTTOM PANEL: MOMENTUM EVOLUTION |p(t)|
+  const botY = boxY + insetH + 16;
+  ctx.save();
+  ctx.fillStyle = 'rgba(13, 17, 27, 0.94)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+  ctx.lineWidth = 1.5;
+  ctx.roundRect(insetX, botY, insetW, insetH, 12);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 11px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText("MOMENTUM DISSIPATION |p(t)|", insetX + insetW / 2, botY + 22);
+
+  const sox = insetX + 44;
+  const soy = botY + insetH - 36;
+  const spw = insetW - 62;
+  const sph = insetH - 65;
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(sox, soy);
+  ctx.lineTo(sox + spw, soy);
+  ctx.moveTo(sox, soy);
+  ctx.lineTo(sox, soy - sph);
+  ctx.stroke();
+
+  // Thermal Equilibrium level (0.82 GeV/c)
+  const thermY = soy - (0.82 / 5.0) * sph;
+  ctx.strokeStyle = 'rgba(52, 211, 153, 0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(sox, thermY);
+  ctx.lineTo(sox + spw, thermY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#34d399';
+  ctx.font = '9px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText("⟨p_th⟩ ≈ 0.82", sox + spw - 4, thermY - 4);
+
+  // Time-history trace
+  if (charm.pHistory.length > 1) {
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < charm.pHistory.length; i++) {
+      const pVal = charm.pHistory[i];
+      const hx = sox + (i / 180) * spw;
+      const hy = soy - (Math.min(5.0, pVal) / 5.0) * sph;
+      if (i === 0) ctx.moveTo(hx, hy);
+      else ctx.lineTo(hx, hy);
+    }
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText("Time Evolution (fm/c)", sox + spw / 2, soy + 22);
+
+  ctx.restore();
+}
+
+// -------------------------------------------------------------
+// MAIN DRAW LOOP
+// -------------------------------------------------------------
+function draw() {
+  ctx.fillStyle = '#07090e';
+  ctx.fillRect(0, 0, width, height);
+
+  // 1. DRAW 2D CONTAINMENT BOX
+  ctx.save();
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+  ctx.shadowBlur = 12;
+  ctx.strokeRect(boxX, boxY, boxW, boxH);
+  ctx.shadowBlur = 0;
+
+  // Dense QGP Interior Glow
+  const grad = ctx.createRadialGradient(
+    boxX + boxW * 0.5, boxY + boxH * 0.5, 20,
+    boxX + boxW * 0.5, boxY + boxH * 0.5, Math.max(boxW, boxH) * 0.6
+  );
+  grad.addColorStop(0, 'rgba(244, 63, 94, 0.12)');
+  grad.addColorStop(0.5, 'rgba(56, 189, 248, 0.06)');
+  grad.addColorStop(1, 'rgba(15, 23, 42, 0.45)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(boxX, boxY, boxW, boxH);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  for (let gx = boxX + 60; gx < boxX + boxW; gx += 60) {
+    ctx.beginPath(); ctx.moveTo(gx, boxY); ctx.lineTo(gx, boxY + boxH); ctx.stroke();
+  }
+  for (let gy = boxY + 60; gy < boxY + boxH; gy += 60) {
+    ctx.beginPath(); ctx.moveTo(boxX, gy); ctx.lineTo(boxX + boxW, gy); ctx.stroke();
+  }
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+  ctx.font = 'bold 11px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText("2D DENSE QGP VESSEL (ELASTIC BOUNDARY)", boxX + 14, boxY + 22);
+  ctx.restore();
+
+  // 2. UPDATE & DRAW DENSE BATH (Confined strictly in Box)
+  bathPartons.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Wall bounce
+    if (p.x < boxX + p.radius) { p.x = boxX + p.radius; p.vx = Math.abs(p.vx); }
+    else if (p.x > boxX + boxW - p.radius) { p.x = boxX + boxW - p.radius; p.vx = -Math.abs(p.vx); }
+
+    if (p.y < boxY + p.radius) { p.y = boxY + p.radius; p.vy = Math.abs(p.vy); }
+    else if (p.y > boxY + boxH - p.radius) { p.y = boxY + boxH - p.radius; p.vy = -Math.abs(p.vy); }
+
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // 3. STEP CHARM QUARK LANGEVIN WALKER
+  if (isPlaying) {
+    const dt = 0.045 * speedMult;
+    charm.step(dt);
+    progress += 0.09 * speedMult;
+    if (progress > 100) {
+      progress = 0;
+      charm.reset();
+    }
+  }
+
+  // 4. DRAW BROWNIAN TRAIL
+  if (showTrail && charm.trail.length > 1) {
+    ctx.save();
+    for (let i = 1; i < charm.trail.length; i++) {
+      const pt1 = charm.trail[i - 1];
+      const pt2 = charm.trail[i];
+      const frac = i / charm.trail.length;
+
+      // Transition from Gold (high p) to Cyan/Green (thermal Brownian jitter)
+      const pNorm = Math.min(1.0, (pt2.p - 0.8) / 3.7);
+      const r = Math.round(251 * pNorm + 52 * (1 - pNorm));
+      const g = Math.round(191 * pNorm + 211 * (1 - pNorm));
+      const b = Math.round(36 * pNorm + 153 * (1 - pNorm));
+
+      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${frac * 0.85})`;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.moveTo(pt1.x, pt1.y);
+      ctx.lineTo(pt2.x, pt2.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // 5. DRAW CHARM QUARK
+  const curP = Math.hypot(charm.px, charm.py);
+  ctx.save();
+
+  // Halo
+  const halo = ctx.createRadialGradient(charm.x, charm.y, 0, charm.x, charm.y, charm.radius * 2.4);
+  halo.addColorStop(0, '#fbbf24');
+  halo.addColorStop(0.5, 'rgba(251, 191, 36, 0.35)');
+  halo.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = halo;
+  ctx.beginPath();
+  ctx.arc(charm.x, charm.y, charm.radius * 2.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(charm.x, charm.y, charm.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#07090e';
+  ctx.font = 'bold 13px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('c', charm.x, charm.y);
+
+  // Velocity arrow (showing instantaneous heading)
+  const arrowScale = 9.0;
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(charm.x, charm.y);
+  ctx.lineTo(charm.x + charm.px * arrowScale, charm.y + charm.py * arrowScale);
+  ctx.stroke();
+
+  ctx.restore();
+
+  // 6. DRAW RIGHT INSET DIAGNOSTICS
+  drawDiagnostics(curP);
+
+  // 7. TELEMETRY & LABELS
+  const t_fm = (progress * 0.12).toFixed(2);
+  document.getElementById('val-time').textContent = t_fm + " fm/c";
+  document.getElementById('val-mom').textContent = curP.toFixed(2) + " GeV/c";
+
+  let statusText = "High-pT Drag Phase";
+  let statusColor = "#f43f5e";
+  if (curP <= 1.1) {
+    statusText = "Fully Thermalized (Brownian Motion)";
+    statusColor = "#34d399";
+  } else if (curP < 2.3) {
+    statusText = "Diffusion Transition Region";
+    statusColor = "#fbbf24";
+  }
+  document.getElementById('val-state').textContent = statusText;
+  document.getElementById('val-state').style.color = statusColor;
+  document.getElementById('timeSlider').value = progress;
+
+  const badgeTitle = document.getElementById('badge-title');
+  const badgeDesc = document.getElementById('badge-desc');
+  if (curP > 2.3) {
+    badgeTitle.textContent = "Directed Collisional Drag Phase";
+    badgeDesc.textContent = "The charm quark plows through the dense medium, transferring forward momentum to ambient quarks and gluons. The path is predominantly ballistic with slight jitter.";
+  } else if (curP > 1.1) {
+    badgeTitle.textContent = "Transition to Stochastic Jitter";
+    badgeDesc.textContent = "As forward momentum depletes, frequent collisions from all directions balance the drag force. Directional memory rapidly fades into random-walk diffusion.";
+  } else {
+    badgeTitle.textContent = "Thermal Equilibrium (Brownian Walk)";
+    badgeDesc.textContent = "The charm quark is in local thermodynamic equilibrium with the dense QGP, executing a classic isotropic Brownian random walk inside the vessel.";
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// -------------------------------------------------------------
+// CONTROLS & LISTENERS
+// -------------------------------------------------------------
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  isPlaying = !isPlaying;
+  btnPlay.textContent = isPlaying ? 'Pause' : 'Play';
+  btnPlay.classList.toggle('active', !isPlaying);
+});
+
+const btnRestart = document.getElementById('btnRestart');
+btnRestart.addEventListener('click', () => {
+  progress = 0;
+  charm.reset();
+});
+
+const btnTrail = document.getElementById('btnTrail');
+btnTrail.addEventListener('click', () => {
+  showTrail = !showTrail;
+  btnTrail.classList.toggle('active', showTrail);
+});
+
+const slider = document.getElementById('timeSlider');
+slider.addEventListener('input', (e) => {
+  progress = parseFloat(e.target.value);
+});
+
+const stageJumps = document.querySelectorAll('.stage-jump');
+stageJumps.forEach(btn => {
+  btn.addEventListener('click', () => {
+    progress = parseFloat(btn.dataset.target);
+    if (progress === 0) charm.reset();
+  });
+});
+
+const speedButtons = document.querySelectorAll('.btn-speed');
+speedButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    speedButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    speedMult = parseFloat(btn.dataset.speed);
+  });
+});
+
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
