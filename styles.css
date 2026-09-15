@@ -78,7 +78,7 @@ body {
 .highlight { color: var(--academic-blue); font-weight: 600; }
 
 /* Bento Grid */
-.bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .bento-card {
     background: var(--bg-subtle);
     padding: 32px;
@@ -232,7 +232,7 @@ body {
 
 /* 1. Grid setup for two-column navigation cards */
 .nav-cards {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 24px;
 }
 
