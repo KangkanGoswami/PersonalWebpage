@@ -21,7 +21,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-.container { max-width: 80%; margin: 0 auto; padding: 0 24px; }
+.container { max-width: 1500px; margin: 0 auto; padding: 0 24px; }
 
 /* Frosted Glass Navbar */
 .navbar {
